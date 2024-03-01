@@ -1,7 +1,7 @@
-# my Comp Sci 30 stuff
+# Comp Sci 30 stuff
 
 ## Demos
-- [Traffic light]()
+- [Traffic light](traffic light)
 
 ## Projects
 - Interactive Scene
