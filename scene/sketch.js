@@ -1,19 +1,10 @@
-// Project Title
-// Your Name
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
-
 let x;
-let y; 
-let q;
+let y;
 let z;
-let g;
-let p;
-let v;
-let state1 = "spawning";
-let count = 0;
+let state = "spawning";
+let lost = 0;
+let state2 = "up";
+let counter = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -22,11 +13,8 @@ function setup() {
 
 function draw() {
   background(220);
+  clayPigeon();
   crossHair();
-  if (count < 5){
-    randCoord();
-  }
-  enemy1();
 }
 
 function crossHair(){
@@ -40,29 +28,35 @@ function crossHair(){
   rect(mouseX - 7,mouseY, 4, 1);
 }
 
-// function target(){
-//   q = 255;
-//   for (let z = width/5; z > 0; z -= (width/15) ){
-//     fill(q)
-//     circle(x,y,z)
-//     if (q = 255){
-      
-//     }
-//   }
-    
-  
-// }
-function randCoord(){
-  x = random(0, width);
-  y = random(0, height);
-  z = random(10, 20);
-}
-
-function enemy1(){
-  if (state1 === "spawning"){
-    x = g;
-    y = p;
-    z = v;
+function clayPigeon(){
+  let q = lost;
+  if (state === "spawning"){ 
+    y = windowHeight;
+    x = random(windowWidth/4, (3*windowWidth/4))
+    state = "not spawning"
   }
-  circle(g, p, v);
+  else if (state === "not spawning"){
+    let g = random(height/2, (height/6));
+    if(y >= g && state2 === "up"){
+      y -= 5;
+    }
+    else if(y <= g){
+      state2 = "down";
+    }
+    else if(y > windowWidth){
+      lost += 1;
+    }
+    if(state2 === "down"){
+      y += 5;
+    }
+    if (lost>q){
+      state = "spawning";
+      q += 1
+    }
+    if (mouseX > x - 10 && mouseX < x + 10 && mouseY > y - 10 && mouseY < y + 10 && mouseIsPressed){
+      counter += 1;
+      state = "spawning"
+    }
+  }
+  circle(x,y,20)
 }
