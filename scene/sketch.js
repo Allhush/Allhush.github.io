@@ -23,6 +23,7 @@ function draw() {
   background(220);
   clayPigeon();
   crossHair();
+  healthBar();
   // knifeTime();
 }
 
@@ -53,16 +54,16 @@ function clayPigeon(){
   else if (state === "not spawning"){
     g = random(height/2, height/6);
     if(y >= g && state2 === "up"){
-      y -= 1;
+      y -= 10;
     }
     else if(y <= g){
       state2 = "down";
     }
-    else if(y > windowWidth){
+    else if(y > height){
       lost += 1;
     }
     if(state2 === "down"){
-      y += 1;
+      y += 10;
     }
     if (lost>q){
       state = "spawning";
@@ -79,7 +80,21 @@ function clayPigeon(){
 }
 
 function healthBar(){
-  while (lost <= 10){
+  if (lost < 11){
+    for(let u = width/11; u <= width; u += width/12){
+      fill(0);
+      rect(u, 25, 35, 20);
+    }
+    fill(220);
+    rect(width/11, 25, 35 + lost*width/12, 20);
+  }
+  else{
+    state = "dead";
+  }
+}
+
+function youDead(){
+  if (state === "dead"){
     
   }
 }
