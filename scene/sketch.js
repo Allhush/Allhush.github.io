@@ -13,17 +13,37 @@ let nin;
 let t;
 let v;
 let a;
+let varTwo;
+let p;
+let dxa = 100;
+let ax;
+let bx;
+let cx;
+let dx;
+let ex;
+let fx;
+let ay;
+let by;
+let cy;
+let dy;
+let ey;
+let fy;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noCursor();
+  state = "dead";
+  p = 0;
 }
 
 function draw() {
   background(220);
-  clayPigeon();
+  // clayPigeon();
   crossHair();
-  healthBar();
+  // healthBar();
+  youDead();
+  deadEnemies();
   // knifeTime();
 }
 
@@ -54,7 +74,7 @@ function clayPigeon(){
   else if (state === "not spawning"){
     g = random(height/2, height/6);
     if(y >= g && state2 === "up"){
-      y -= 10;
+      y -= dxa;
     }
     else if(y <= g){
       state2 = "down";
@@ -63,7 +83,7 @@ function clayPigeon(){
       lost += 1;
     }
     if(state2 === "down"){
-      y += 10;
+      y += dxa;
     }
     if (lost>q){
       state = "spawning";
@@ -88,15 +108,57 @@ function healthBar(){
     fill(220);
     rect(width/11, 25, 35 + lost*width/12, 20);
   }
-  else{
+  else if (lost > 10){
     state = "dead";
+    varTwo = 1;
+    p = millis();
   }
 }
 
 function youDead(){
-  if (state === "dead"){
-    
+  if (state === "dead" && p + 2000 > millis()){
+    fill(0);
+    textAlign(CENTER);
+    textSize(50);
+    text("You died, hit as many falling circles as you can to get extra points!", width/2, height/2);
+    varTwo = 0;
   }
+  if (state === "dead" && millis()> p + 2000){
+    state = "deademies";
+  }
+}
+
+function deadEnemies(){
+  if (state === "deademies"){
+    ax = random(windowWidth/5, 4*windowWidth/5);
+    bx = random(windowWidth/5, 4*windowWidth/5);
+    cx = random(windowWidth/5, 4*windowWidth/5);
+    dx = random(windowWidth/5, 4*windowWidth/5);
+    ex = random(windowWidth/5, 4*windowWidth/5);
+    fx = random(windowWidth/5, 4*windowWidth/5);
+    ay = 0;
+    by = 0;
+    cy = 0;
+    dy = 0;
+    ey = 0;
+    fy = 0;
+    state = "deademies2";
+  }
+  else if(state === "deademies2"){
+    ay -= random(2,5);
+    by -= random(2,7);
+    cy -= random(4,5);
+    dy -= random(4,7);
+    ey -= random(5,10);
+    fy -= random(1,10);
+  }
+  fill(0);
+  circle(ax, ay, 20);
+  circle(bx, by, 20);
+  circle(cx, cy, 20);
+  circle(dx, dy, 20);
+  circle(ex, ey, 20);
+  circle(fx, fy, 20);
 }
 
 // function knifeTime(){
