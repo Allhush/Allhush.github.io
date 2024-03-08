@@ -15,7 +15,7 @@ let v;
 let a;
 let varTwo;
 let p;
-let dxa = 100;
+let dxa = 5;
 let ax;
 let bx;
 let cx;
@@ -33,15 +33,14 @@ let fy;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noCursor();
-  state = "dead";
-  p = 0;
 }
 
 function draw() {
   background(220);
-  // clayPigeon();
+  clayPigeon();
+  scorekeep();
   crossHair();
-  // healthBar();
+  healthBar();
   youDead();
   deadEnemies();
   // knifeTime();
@@ -108,15 +107,16 @@ function healthBar(){
     fill(220);
     rect(width/11, 25, 35 + lost*width/12, 20);
   }
-  else if (lost > 10){
+  else if (lost > 10 && lost < 20){
     state = "dead";
     varTwo = 1;
     p = millis();
+    lost += 10;
   }
 }
 
 function youDead(){
-  if (state === "dead" && p + 2000 > millis()){
+  if (state === "dead"){
     fill(0);
     textAlign(CENTER);
     textSize(50);
@@ -159,6 +159,12 @@ function deadEnemies(){
   circle(dx, dy, 20);
   circle(ex, ey, 20);
   circle(fx, fy, 20);
+}
+
+function scorekeep(){
+  fill(0);
+  textSize(50);
+  text(counter, 10, 60);
 }
 
 // function knifeTime(){
