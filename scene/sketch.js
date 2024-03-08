@@ -31,11 +31,11 @@ let fy;
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
   noCursor();
 }
 
 function draw() {
+  createCanvas(windowWidth, windowHeight);
   background(220);
   clayPigeon();
   scorekeep();
@@ -164,7 +164,7 @@ function deadEnemies(){
 function scorekeep(){
   fill(0);
   textSize(50);
-  text(counter, 10, 60);
+  text("you have " + counter + " points!", 10, height - 60);
 }
 
 // function knifeTime(){
