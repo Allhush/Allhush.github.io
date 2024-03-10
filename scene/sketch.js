@@ -1,7 +1,7 @@
 let x;
 let y;
 let z;
-let state = "spawning";
+let state = "start screen";
 let lost = 0;
 let state2 = "up";
 let counter = 0;
@@ -16,33 +16,42 @@ let a;
 let varTwo;
 let p;
 let dxa = 5;
-let ax;
-let bx;
-let cx;
-let dx;
-let ex;
-let fx;
-let ay;
-let by;
-let cy;
-let dy;
-let ey;
-let fy;
+let aw = 5000;
+let rE = random(20000, 30000);
+let rE2 = 0;
+let hb;
+let rex;
+let rey;
+let randstate = "not spawning";
+// let ax;
+// let bx;
+// let cx;
+// let dx;
+// let ex;
+// let fx;
+// let ay;
+// let by;
+// let cy;
+// let dy;
+// let ey;
+// let fy;
 
 
 function setup() {
   noCursor();
+  varTwo = 1
 }
 
 function draw() {
   createCanvas(windowWidth, windowHeight);
-  background(220);
+  startScreen();
   clayPigeon();
   scorekeep();
+  speedUp();
   crossHair();
   healthBar();
   youDead();
-  deadEnemies();
+  // deadEnemies();
   // knifeTime();
 }
 
@@ -104,8 +113,9 @@ function healthBar(){
       fill(0);
       rect(u, 25, 35, 20);
     }
-    fill(220);
-    rect(width/11, 25, 35 + lost*width/12, 20);
+      fill(220);
+      rect(width/11, 25, 35 + lost*width/12, 20);
+    
   }
   else if (lost > 10 && lost < 20){
     state = "dead";
@@ -120,51 +130,87 @@ function youDead(){
     fill(0);
     textAlign(CENTER);
     textSize(50);
-    text("You died, hit as many falling circles as you can to get extra points!", width/2, height/2);
-    varTwo = 0;
+    text("You died", width/2, height/2);
   }
-  if (state === "dead" && millis()> p + 2000){
-    state = "deademies";
-  }
+  // if (state === "dead" && millis()> p + 2000){
+  //   state = "deademies";
+  // }
 }
 
-function deadEnemies(){
-  if (state === "deademies"){
-    ax = random(windowWidth/5, 4*windowWidth/5);
-    bx = random(windowWidth/5, 4*windowWidth/5);
-    cx = random(windowWidth/5, 4*windowWidth/5);
-    dx = random(windowWidth/5, 4*windowWidth/5);
-    ex = random(windowWidth/5, 4*windowWidth/5);
-    fx = random(windowWidth/5, 4*windowWidth/5);
-    ay = 0;
-    by = 0;
-    cy = 0;
-    dy = 0;
-    ey = 0;
-    fy = 0;
-    state = "deademies2";
-  }
-  else if(state === "deademies2"){
-    ay -= random(2,5);
-    by -= random(2,7);
-    cy -= random(4,5);
-    dy -= random(4,7);
-    ey -= random(5,10);
-    fy -= random(1,10);
-  }
-  fill(0);
-  circle(ax, ay, 20);
-  circle(bx, by, 20);
-  circle(cx, cy, 20);
-  circle(dx, dy, 20);
-  circle(ex, ey, 20);
-  circle(fx, fy, 20);
-}
+// function deadEnemies(){
+//   if (state === "deademies"){
+//     ax = random(windowWidth/5, 4*windowWidth/5);
+//     bx = random(windowWidth/5, 4*windowWidth/5);
+//     cx = random(windowWidth/5, 4*windowWidth/5);
+//     dx = random(windowWidth/5, 4*windowWidth/5);
+//     ex = random(windowWidth/5, 4*windowWidth/5);
+//     fx = random(windowWidth/5, 4*windowWidth/5);
+//     ay = 0;
+//     by = 0;
+//     cy = 0;
+//     dy = 0;
+//     ey = 0;
+//     fy = 0;
+//     state = "deademies2";
+//   }
+//   else if(state === "deademies2"){
+//     ay -= random(2,5);
+//     by -= random(2,7);
+//     cy -= random(4,5);
+//     dy -= random(4,7);
+//     ey -= random(5,10);
+//     fy -= random(1,10);
+//   }
+//   fill(0);
+//   circle(ax, ay, 20);
+//   circle(bx, by, 20);
+//   circle(cx, cy, 20);
+//   circle(dx, dy, 20);
+//   circle(ex, ey, 20);
+//   circle(fx, fy, 20);
+// }
 
 function scorekeep(){
   fill(0);
   textSize(50);
-  text("you have " + counter + " points!", 10, height - 60);
+  textAlign(LEFT, BOTTOM);
+  text("You have " + counter + " points!", 10, height - 60);
+}
+
+function startScreen(){
+  if (state === !"start screen"){
+    background(220);
+  }
+  if (state === "start screen" && varTwo === 1){
+    background(0);
+    textAlign(CENTER, CENTER);
+    fill(255);
+    text("Press the mouse to start", width/2, height/2);
+    if (mouseIsPressed){
+      background(220);
+      state = "spawning";
+      varTwo = 0;
+    }
+  }
+}
+
+function speedUp(){
+  if (counter > 10 && millis() > aw + 20000){
+    dxa += 1;
+    aw = millis();
+  }
+}
+
+function randomEvent(){
+  if (millis > rE + rE2){
+    rey = random(height/4, 3*height/4);
+    rex = width;
+    randstate = "spawning"
+  }
+  else if (randstate === "spawning"){
+    // do later
+  }
+
 }
 
 // function knifeTime(){
