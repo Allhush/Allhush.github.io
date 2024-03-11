@@ -18,11 +18,12 @@ let p;
 let dxa = 5;
 let aw = 5000;
 let rE = random(20000, 30000);
-let rE2 = 0;
+let rE2 = 20000;
 let hb;
 let rex;
 let rey;
-let randstate = "not spawning";
+let randState = "not spawning";
+let dya;
 // let ax;
 // let bx;
 // let cx;
@@ -51,6 +52,7 @@ function draw() {
   crossHair();
   healthBar();
   youDead();
+  // randomEvent();
   // deadEnemies();
   // knifeTime();
 }
@@ -205,12 +207,23 @@ function randomEvent(){
   if (millis > rE + rE2){
     rey = random(height/4, 3*height/4);
     rex = width;
-    randstate = "spawning"
+    randState = "go time";
+    dya = 7;
   }
-  else if (randstate === "spawning"){
-    // do later
+  else if (randState === "go time"){
+    rex -= 10;
+    rey += dya;
+    if (rex < width/2){
+      dya = -dya;
+    }
+    rE = millis();
+    rE2 = random(2000, 50000);
   }
-
+  circle(rex, rey, 20);
+  if (mouseX > rex - 10 && mouseX < rex + 10 && mouseY > rey - 10 && mouseY < rey + 10){
+    counter += 7;
+    randState = "else" ;
+  }
 }
 
 // function knifeTime(){
