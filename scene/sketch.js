@@ -17,12 +17,12 @@ let varTwo;
 let p;
 let dxa = 5;
 let aw = 5000;
-let rE = random(20000, 30000);
+let rE;
 let rE2 = 20000;
 let hb;
 let rex;
 let rey;
-let randState = "not spawning";
+let rS = "not spawning";
 let dya;
 // let ax;
 // let bx;
@@ -40,19 +40,20 @@ let dya;
 
 function setup() {
   noCursor();
-  varTwo = 1
+  varTwo = 1;
+  rE = random(20000, 30000);
 }
 
 function draw() {
   createCanvas(windowWidth, windowHeight);
+  healthBar();
   startScreen();
   clayPigeon();
   scorekeep();
   speedUp();
   crossHair();
-  healthBar();
   youDead();
-  // randomEvent();
+  randomEvent();
   // deadEnemies();
   // knifeTime();
 }
@@ -115,8 +116,8 @@ function healthBar(){
       fill(0);
       rect(u, 25, 35, 20);
     }
-      fill(220);
-      rect(width/11, 25, 35 + lost*width/12, 20);
+    fill(220);
+    rect(width/11, 25, 35 + lost*width/12, 20);
     
   }
   else if (lost > 10 && lost < 20){
@@ -185,6 +186,8 @@ function startScreen(){
   }
   if (state === "start screen" && varTwo === 1){
     background(0);
+    fill(0);
+    rect(width/11, 25, 35, 20);
     textAlign(CENTER, CENTER);
     fill(255);
     text("Press the mouse to start", width/2, height/2);
@@ -204,26 +207,29 @@ function speedUp(){
 }
 
 function randomEvent(){
-  if (millis > rE + rE2){
-    rey = random(height/4, 3*height/4);
-    rex = width;
-    randState = "go time";
-    dya = 7;
+  if (millis() > rE + rE2){
+    rS = "spawning";
   }
-  else if (randState === "go time"){
+  if (rS === "spawning"){
+    rex = windowWidth;
+    rey = random(3*windowHeight/4, windowHeight/4);
+    rS = 1;
+    rE = millis();
+    rE2 = random(2000, 50000);
+  }
+  if (rS === 1){
     rex -= 10;
     rey += dya;
     if (rex < width/2){
       dya = -dya;
     }
-    rE = millis();
-    rE2 = random(2000, 50000);
+    dya = -dya;
   }
-  circle(rex, rey, 20);
   if (mouseX > rex - 10 && mouseX < rex + 10 && mouseY > rey - 10 && mouseY < rey + 10){
     counter += 7;
-    randState = "else" ;
+    rS = "else";
   }
+  circle(rex, rey, 20);
 }
 
 // function knifeTime(){
