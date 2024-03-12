@@ -234,6 +234,7 @@ function speedUp(){
   }
 }
 
+// make background
 function bGround(){
   if (bGroundS === "on")
   noStroke();
