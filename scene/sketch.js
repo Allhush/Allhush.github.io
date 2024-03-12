@@ -236,13 +236,14 @@ function speedUp(){
 
 // make background
 function bGround(){
-  if (bGroundS === "on")
-  noStroke();
-  fill("green");
-  rect(0, 2*height/3, width, height/3);
-  fill("skyblue");
-  rect(0, 0, width, 2*height/3);
-  stroke(0);
+  if (bGroundS === "on"){
+    noStroke();
+    fill("green");
+    rect(0, 2*height/3, width, height/3);
+    fill("skyblue");
+    rect(0, 0, width, 2*height/3);
+    stroke(0);
+  }
 }
 
 // function randomEvent(){
