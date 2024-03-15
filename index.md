@@ -5,6 +5,8 @@
 - [bouncing ball](bouncingball)
 - [collision demo](collision)
 - [Array's and objects](circles)
+- [Generative Art](genart)
+
 
 
 ## Projects
