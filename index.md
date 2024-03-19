@@ -6,7 +6,7 @@
 - [collision demo](collision)
 - [Array's and objects](circles)
 - [Generative Art](genart)
-
+- [Terrain generation Perlin noise](terrian)
 
 
 ## Projects
