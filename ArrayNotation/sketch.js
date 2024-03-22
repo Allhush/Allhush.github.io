@@ -2,66 +2,50 @@
 // Arrays and object Notation
 // CS30
 
-
-let theCircles = [];
-let time = 0;
-let x = 0;
-let y = 0;
-
+let object = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  spawnCircles();
 }
 
 
 function draw() {
-  displayBalls();
-  moveCircles();
-  times();
+  background(220);
+  showCreation();
+  objectBoogey();
+  test1();
 }
 
-function spawnCircles(){
-  let circles = {
-    xValue: width/2,
-    yValue: height/2,
-    x: noise(time)*400,
-    y: noise(time + 1000)*400,
-    diameter: random(15,45),
-  };
-  theCircles.push(circles);
+function mousePressed(){
 }
 
-function times(){
-  time+= 1/120;
-}
-
-function displayBalls(){
-  for (let ball of theCircles){
-    circle(ball.xValue, ball.yValue, ball.diameter);
-
-    if (ball.x >= width){
-      ball.x = 0;
-      ball.y = height - ball.y;
-    }
-    else if (ball.y >= height){
-      ball.y = 0;
-      ball.x = width - ball.x;
-    }
-    else if (ball.x <= 0){
-      ball.x = width -1;
-      ball.y = height - ball.y;
-    }
-    else if (ball.y <= 0){
-      ball.y = height -1;
-      ball.x = width - ball.x;
-    }
+function test1(){
+  for(let jingleBell = 0; jingleBell< 10; jingleBell++){
+    spawnObject(random(0, width/2), random(0, height));
   }
 }
 
-function moveCircles(){
-  for(let ball of theCircles){
-    ball.xValue += ball.x;
-    ball.yValue += ball.y;
+function spawnObject(innitialX, innitialY){
+  let creation = {
+    x: innitialX,
+    y: innitialY,
+    w: random(5, 10),
+    h: random(5, 10),
+    dx: random(-5, 5),
+    dy: random(-5, 5),
+  };
+  object.push(creation);
+}
+
+function showCreation(){
+  for(let creations of object){
+    rect(creations.x, creations.y, creations.w, creations.h);
+  }
+}
+
+function objectBoogey(){
+  for(let creations of object){
+    creations.x += creations.dx;
+    creations.y += creations.dy;
   }
 }
