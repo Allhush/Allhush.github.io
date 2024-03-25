@@ -7,6 +7,7 @@
 - [Array's and objects](circles)
 - [Generative Art](genart)
 - [Terrain generation Perlin noise](terrian)
+- [bubble movement](bubble)
 
 
 ## Projects
