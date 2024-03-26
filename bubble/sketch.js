@@ -16,10 +16,32 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(0);
   // moveRandomBubbles();
   moveNoisyBubbles();
   displayBubbles();
+
+}
+
+function mousePressed(){
+  for(let i = bubbles.length - 1; i >= 0; i--){
+    if(clickedInBubble(mouseX, mouseY, bubbles[i])){
+      // kill it
+      bubbles.splice(i, 1);
+    }
+  }
+}
+
+
+function clickedInBubble(x, y, someBubbles){
+  let distanceAway = dist(x, y, someBubbles.x, someBubbles.y);
+  let radius = someBubbles.size/2;
+  if(distanceAway < radius){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 function moveNoisyBubbles(){
@@ -65,7 +87,7 @@ function displayBubbles(){
 
 function spawnBubble(){
   let someBubble = {
-    size: random(10, 30),
+    size: random(30, 50),
     x: random(0, width),
     y: random(0, height),
     speed: 3,
@@ -75,7 +97,7 @@ function spawnBubble(){
     alpha: random(255),
     timex: random(3141592654),
     timey: random(3141592654),
-    deltatime: 0.003141592654,
+    deltatime: 0.001,
   };
   bubbles.push(someBubble);
 }
