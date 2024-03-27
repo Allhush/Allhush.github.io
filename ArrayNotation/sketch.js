@@ -3,15 +3,29 @@
 // CS30
 
 let object = [];
+let projectiles = [];
 
 let state = "on";
 let numbers = {
   counter: 0, 
   score: 0,
 };
+let player;
+let rotator = 0;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  noStroke();
+  angleMode(DEGREES);
+  rectMode(CENTER);
+  player = {
+    xInnitial: width/2,
+    yInnitial: height/2,
+    dimensions1: 20,
+    dimensions2: 15,
+    projectile: 3,
+  };
 }
 
 
@@ -20,6 +34,9 @@ function draw() {
   showCreation();
   objectBoogey();
   test1();
+  // player1();
+  playerBoogey();
+  playerRotate();
 }
 
 function mousePressed(){
@@ -29,6 +46,7 @@ function mousePressed(){
     }
   }  
 }
+
 
 function clickedAsteroid(x, y, object){
   let distanceAway = dist(x, y, object.x, object.y);
@@ -41,14 +59,42 @@ function clickedAsteroid(x, y, object){
   }
 }
 
-function player(){
-  let player = {
-    xInnitial: width/2,
-    yInnitial: height/2,
+// function player1(){
+//   fill(220, 100, 100);
+//   rect(player.xInnitial, player.yInnitial + 10, player.dimensions1 + 5, player.dimensions2);
+//   rect(player.xInnitial, player.yInnitial, player.dimensions2, player.dimensions1);
+// }
 
-
-  };
+function playerBoogey(){
+  if (keyIsDown(87)){
+    player.yInnitial -= 5;
+  }
+  if (keyIsDown (83)){
+    player.yInnitial += 5;
+  }
+  if (keyIsDown(68)){
+    player.xInnitial += 5;
+  }
+  if (keyIsDown(65)){
+    player.xInnitial -= 5;
+  }
 }
+
+function playerRotate(){
+  push();
+  translate(player.xInnitial, player.yInnitial);
+  rotate(rotator);
+  fill(225, 0, 0);
+  rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
+  rect(0, 0, player.dimensions2, player.dimensions1);
+  pop();
+}
+
+function mouseWheel(event){
+  rotator += event.delta;
+}
+
+
 
 function test1(){
   if(numbers.counter < 25 && state === "on"){
@@ -79,6 +125,7 @@ function spawnObject(innitialX, innitialY){
 function showCreation(){
   for(let creations of object){
     rectMode(CENTER);
+    fill(255);
     rect(creations.x, creations.y, creations.w, creations.h);
   }
 }
@@ -104,4 +151,9 @@ function objectBoogey(){
       creations.x = width - creations.x;
     }
   }
+}
+
+function spawnProjectiles(spawnX, spawnY){
+  
+
 }
