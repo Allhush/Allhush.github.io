@@ -12,6 +12,7 @@ let numbers = {
 };
 let player;
 let rotator = 0;
+let rotatorState = 0;
 
 
 function setup() {
@@ -24,7 +25,7 @@ function setup() {
     yInnitial: height/2,
     dimensions1: 20,
     dimensions2: 15,
-    projectile: 3,
+    projectile: 5,
   };
 }
 
@@ -37,14 +38,21 @@ function draw() {
   // player1();
   playerBoogey();
   playerRotate();
+  // moveProjectiles();
 }
 
 function mousePressed(){
-  for(let i = object.length - 1; i >= 0; i--){
-    if(clickedAsteroid(mouseX, mouseY, object[i])){
-      object.splice(i, 1);
-    }
-  }  
+  if (rotatorState === 0){
+    spawnProjectiles(player.xInnitial, player.yInnitial);
+  }
+  else if(rotatorState === 1){
+    spawnProjectiles(0, 0);
+  }
+  // for(let i = object.length - 1; i >= 0; i--){
+  //   if(clickedAsteroid(mouseX, mouseY, object[i])){
+  //     object.splice(i, 1);
+  //   }
+  // }  
 }
 
 
@@ -82,11 +90,17 @@ function playerBoogey(){
 
 function playerRotate(){
   push();
+  rotatorState = 1;
   translate(player.xInnitial, player.yInnitial);
   rotate(rotator);
   fill(225, 0, 0);
   rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
   rect(0, 0, player.dimensions2, player.dimensions1);
+  for(let ball of projectiles){
+    fill(0, 0, 255);
+    circle(ball.x, ball.y, ball.size);
+    ball.y -= 10;
+  }
   pop();
 }
 
@@ -154,6 +168,19 @@ function objectBoogey(){
 }
 
 function spawnProjectiles(spawnX, spawnY){
-  
+  let littleProjectile ={
+    x: spawnX,
+    y: spawnY,
+    size: player.projectile,
+    speed: 10,
+  };
+  projectiles.push(littleProjectile);
+}
 
+function moveProjectiles(){
+  for(let ball of projectiles){
+    fill(0, 0, 255);
+    circle(ball.x, ball.y, ball.size);
+    ball.y -= 10;
+  }
 }
