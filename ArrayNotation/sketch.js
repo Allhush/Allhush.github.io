@@ -13,6 +13,7 @@ let numbers = {
 let player;
 let rotator = 0;
 let rotatorState = 0;
+let movementState = "up";
 
 
 function setup() {
@@ -39,22 +40,20 @@ function draw() {
   playerBoogey();
   playerRotate();
   // moveProjectiles();
+  // hittingProjectiles();
+  console.log(rotate);
 }
 
 function mousePressed(){
-  if (rotatorState === 0){
-    spawnProjectiles(player.xInnitial, player.yInnitial);
-  }
-  else if(rotatorState === 1){
+  if(rotatorState === 1){
     spawnProjectiles(0, 0);
+  } 
+  for(let i = object.length - 1; i >= 0; i--){
+    if(clickedAsteroid(mouseX, mouseY, onject[i])){
+      object.splice(i,1)
+    }
   }
-  // for(let i = object.length - 1; i >= 0; i--){
-  //   if(clickedAsteroid(mouseX, mouseY, object[i])){
-  //     object.splice(i, 1);
-  //   }
-  // }  
 }
-
 
 function clickedAsteroid(x, y, object){
   let distanceAway = dist(x, y, object.x, object.y);
@@ -66,6 +65,27 @@ function clickedAsteroid(x, y, object){
     return false;
   }
 }
+
+function hittingProjectiles(){
+  for(let i = object.length - 1; i >= 0; i--){
+
+  }
+}
+
+// for(let v = projectiles.length - 1; v >= 0; v --){
+//   if(clickedAsteroid(projectiles[v].x, projectiles[v].y, object[i])){
+//     object.splice(i, 1);
+//   }
+// }
+// for(let ball of projectiles){
+//   if(clickedAsteroid(ball.x, ball.y, object[i])){
+//     object.splice(i, 1);
+//   }
+// }
+
+// if(clickedAsteroid(mouseX, mouseY, onject[i])){
+//   object.splice(i,1)
+// }
 
 // function player1(){
 //   fill(220, 100, 100);
@@ -99,7 +119,13 @@ function playerRotate(){
   for(let ball of projectiles){
     fill(0, 0, 255);
     circle(ball.x, ball.y, ball.size);
+    // if(keyIsDown(87) && movementState === "up"){
+    //   ball.y -= 15;
+    // }
+    // else if(keyIsDown(87)){
+    // }
     ball.y -= 10;
+    ball.x += random(-2,2);
   }
   pop();
 }
@@ -182,5 +208,6 @@ function moveProjectiles(){
     fill(0, 0, 255);
     circle(ball.x, ball.y, ball.size);
     ball.y -= 10;
+    
   }
 }
