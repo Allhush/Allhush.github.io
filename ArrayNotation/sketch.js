@@ -4,6 +4,10 @@
 
 let object = [];
 let projectiles = [];
+let condensedVariables = {
+ speed: 1,
+ amount: 10,
+};
 
 let state = "on";
 let numbers = {
@@ -45,7 +49,15 @@ function draw() {
   // hittingProjectiles();
   collisionAndDeath();
   revive();
+  thescore();
   // console.log(rotate);
+}
+
+function thescore(){
+  fill("red");
+  // textAlign(CENTER);
+  textSize(50);
+  text("your have " + numbers.score + " points", width/25, height/10);
 }
 
 function revive(){
@@ -64,6 +76,7 @@ function mousePressed(){
     for(let ball of projectiles){
       if(clickedAsteroid(mouseX, mouseY, object[i])){
         object.splice(i, 1);
+        numbers.score += 1;
       }
     }
   }
@@ -130,6 +143,22 @@ function playerBoogey(){
   if (keyIsDown(65)){
     player.xInnitial -= 5;
   }
+  if (player.xInnitial >= width){
+    player.xInnitial = 0;
+    player.yInnitial = height - player.yInnitial;
+  }
+  else if (player.yInnitial >= height){
+    player.yInnitial = 0;
+    player.xInnitial = width - player.xInnitial;
+  }
+  else if (player.xInnitial <= 0){
+    player.xInnitial = width -1;
+    player.yInnitial = height - player.yInnitial;
+  }
+  else if (player.yInnitial <= 0){
+    player.yInnitial = height -1;
+    player.xInnitial = width - player.yInnitial;
+  }
 }
 
 function playerRotate(){
@@ -142,7 +171,7 @@ function playerRotate(){
     rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
     rect(0, 0, player.dimensions2, player.dimensions1);
     for(let ball of projectiles){
-      fill(0, 0, 255);
+      fill("yellow");
       circle(ball.x, ball.y, ball.size);
       // if(keyIsDown(87) && movementState === "up"){
       //   ball.y -= 15;
@@ -164,21 +193,26 @@ function mouseWheel(event){
 
 function test1(){
   sideChoice = random(100);
-  if(numbers.counter < 25 && state === "on" && sideChoice > 50){
+  if(numbers.counter < condensedVariables.amount && state === "on" && sideChoice > 50){
     spawnObject(random(0, 3*width/8), random(0, height));
     numbers.counter += 1;
   }
-  else if(state === "on" && numbers.counter < 25 && sideChoice <= 50){
+  else if(state === "on" && numbers.counter < condensedVariables.amount && sideChoice <= 50){
     spawnObject(random(5*width/8, width), random(0, height));
     numbers.counter += 1;
   }
   else if(state === "off" && object.length === 0){
     state = "on";
     numbers.counter = 0;
+    condensedVariables.speed++;
+    condensedVariables.amount += 2;
   }
   else{
     state = "off";
   }
+  // if(numbers.counter >= 10){
+  //   g++;
+  // }
 }
 
 function spawnObject(innitialX, innitialY){
@@ -187,8 +221,8 @@ function spawnObject(innitialX, innitialY){
     y: innitialY,
     w: random(2, 4)*10,
     h: random(2, 4)*10,
-    dx: random(-3, 3),
-    dy: random(-3, 3),
+    dx: random(-condensedVariables.speed, condensedVariables.speed),
+    dy: random(-condensedVariables.speed, condensedVariables.speed),
   };
   object.push(creation);
 }
@@ -235,10 +269,16 @@ function spawnProjectiles(spawnX, spawnY){
 }
 
 function moveProjectiles(){
-  for(let ball of projectiles){
-    fill(0, 0, 255);
-    circle(ball.x, ball.y, ball.size);
-    ball.y -= 10;
-    
+  for(let ball = projectiles.length - 1; ball > 0; ball--){
+    fill("yellow");
+    circle(projectiles[ball].x, projectiles[ball].y, projectiles[ball].size);
+    projectiles[ball].y -= 10;
+    // for(let i = object.length - 1; i > 0; i--){
+    //   let distanceAway = dist(projectiles[ball].x, projectiles[ball].y, object[i].x, object[i].y);
+    //   let diameter = object[i].w;
+    //   if(distanceAway < diameter){
+    //     object.splice(i, 1)
+    //   }
+    // }
   }
 }
