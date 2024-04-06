@@ -14,6 +14,8 @@ let player;
 let rotator = 0;
 let rotatorState = 0;
 let movementState = "up";
+let healthState = "alive";
+let sideChoice;
 
 
 function setup() {
@@ -41,7 +43,17 @@ function draw() {
   playerRotate();
   // moveProjectiles();
   // hittingProjectiles();
-  console.log(rotate);
+  collisionAndDeath();
+  revive();
+  // console.log(rotate);
+}
+
+function revive(){
+  if(keyIsDown(82)){
+    player.xInnitial = width/2
+    player.yInnitial = height/2;
+    healthState = "alive";
+  }
 }
 
 function mousePressed(){
@@ -49,16 +61,28 @@ function mousePressed(){
     spawnProjectiles(0, 0);
   } 
   for(let i = object.length - 1; i >= 0; i--){
-    if(clickedAsteroid(mouseX, mouseY, onject[i])){
-      object.splice(i,1)
+    for(let ball of projectiles){
+      if(clickedAsteroid(mouseX, mouseY, object[i])){
+        object.splice(i, 1);
+      }
+    }
+  }
+}
+
+function collisionAndDeath(){
+  for(let c = object.length - 1; c > 0; c--){
+    let distanceAway = dist(player.xInnitial, player.yInnitial, object[c].x, object[c].y);
+    let diameter = object[c].w + player.dimensions2;
+    if (distanceAway < diameter){
+      healthState = "dead";
     }
   }
 }
 
 function clickedAsteroid(x, y, object){
   let distanceAway = dist(x, y, object.x, object.y);
-  let radius = object.w/2;
-  if(distanceAway < radius){
+  let diameter = object.w;
+  if(distanceAway < diameter){
     return true;
   }
   else{
@@ -114,18 +138,20 @@ function playerRotate(){
   translate(player.xInnitial, player.yInnitial);
   rotate(rotator);
   fill(225, 0, 0);
-  rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
-  rect(0, 0, player.dimensions2, player.dimensions1);
-  for(let ball of projectiles){
-    fill(0, 0, 255);
-    circle(ball.x, ball.y, ball.size);
-    // if(keyIsDown(87) && movementState === "up"){
-    //   ball.y -= 15;
-    // }
-    // else if(keyIsDown(87)){
-    // }
-    ball.y -= 10;
-    ball.x += random(-2,2);
+  if (healthState === "alive"){
+    rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
+    rect(0, 0, player.dimensions2, player.dimensions1);
+    for(let ball of projectiles){
+      fill(0, 0, 255);
+      circle(ball.x, ball.y, ball.size);
+      // if(keyIsDown(87) && movementState === "up"){
+      //   ball.y -= 15;
+      // }
+      // else if(keyIsDown(87)){
+      // }
+      ball.y -= 10;
+      ball.x += random(-2,2);
+    }
   }
   pop();
 }
@@ -137,8 +163,13 @@ function mouseWheel(event){
 
 
 function test1(){
-  if(numbers.counter < 25 && state === "on"){
-    spawnObject(random(0, width), random(0, height));
+  sideChoice = random(100);
+  if(numbers.counter < 25 && state === "on" && sideChoice > 50){
+    spawnObject(random(0, 3*width/8), random(0, height));
+    numbers.counter += 1;
+  }
+  else if(state === "on" && numbers.counter < 25 && sideChoice <= 50){
+    spawnObject(random(5*width/8, width), random(0, height));
     numbers.counter += 1;
   }
   else if(state === "off" && object.length === 0){
