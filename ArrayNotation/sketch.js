@@ -210,7 +210,7 @@ function playerRotate(){
   rotatorState = 1;
   translate(player.xInnitial, player.yInnitial);
   rotate(rotator);
-  fill(225, 0, 0);
+  fill(0, 255, 0);
   if (healthState === "alive"){
     rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
     rect(0, 0, player.dimensions2, player.dimensions1);
