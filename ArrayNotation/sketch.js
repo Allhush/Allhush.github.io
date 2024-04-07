@@ -285,19 +285,19 @@ function objectBoogey(){
     creations.y += creations.dy;
     if (creations.x >= width){
       creations.x = 0;
-      creations.y = height - creations.y;
+      creations.y = height - creations.y + random(-5,5);
     }
     else if (creations.y >= height){
       creations.y = 0;
-      creations.x = width - creations.x;
+      creations.x = width - creations.x + random(-5,5);
     }
     else if (creations.x <= 0){
       creations.x = width -1;
-      creations.y = height - creations.y;
+      creations.y = height - creations.y + random(-5,5);
     }
     else if (creations.y <= 0){
       creations.y = height -1;
-      creations.x = width - creations.x;
+      creations.x = width - creations.x + random(-5,5);
     }
   }
 }
