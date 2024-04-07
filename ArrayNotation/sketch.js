@@ -263,8 +263,8 @@ function spawnObject(innitialX, innitialY){
   let creation = {
     x: innitialX,
     y: innitialY,
-    w: random(2, 4)*10,
-    h: random(2, 4)*10,
+    w: random(4, 6)*10,
+    h: random(4, 6)*10,
     dx: random(-condensedVariables.speed, condensedVariables.speed),
     dy: random(-condensedVariables.speed, condensedVariables.speed),
   };
