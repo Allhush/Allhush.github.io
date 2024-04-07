@@ -53,6 +53,7 @@ function draw() {
     textSize(25);
     text("Standard wasd controls, use the mouse wheel to rotate, avoid the asteroids and tap them with your mouse, press R to start", width/2, height/2);
     revive();
+    thescore();
   }
   else if(healthState === "alive"){
     showCreation();
@@ -71,6 +72,7 @@ function draw() {
     for(let z = object.length -1; z >= 0; z --){
       object.pop();
     }
+    thescore();
     revive();
     deathScreen();
   }
