@@ -18,7 +18,7 @@ let player;
 let rotator = 0;
 let rotatorState = 0;
 let movementState = "up";
-let healthState = "alive";
+let healthState = "start screen";
 let sideChoice;
 
 
@@ -39,23 +39,64 @@ function setup() {
 
 function draw() {
   background(0);
-  showCreation();
-  objectBoogey();
-  test1();
-  // player1();
-  playerBoogey();
-  playerRotate();
-  // moveProjectiles();
-  // hittingProjectiles();
-  collisionAndDeath();
-  revive();
-  thescore();
-  // console.log(rotate);
+  if(healthState === "start screen"){
+    fill("red");
+    textAlign(CENTER);
+    textSize(50);
+    text("Press R to start, press C for controls", width/2, height/2);
+    revive();
+    showControls();
+  }
+  else if(healthState === "controls"){
+    fill("red");
+    textAlign(CENTER);
+    textSize(25);
+    text("Standard wasd controls, use the mouse wheel to rotate, avoid the asteroids and tap them with your mouse, press R to start", width/2, height/2);
+    revive();
+  }
+  else if(healthState === "alive"){
+    showCreation();
+    objectBoogey();
+    test1();
+    // player1();
+    playerBoogey();
+    playerRotate();
+    // moveProjectiles();
+    // hittingProjectiles();
+    collisionAndDeath();
+    // console.log(rotate);
+    thescore();
+  }
+  else if(healthState === "dead"){
+    for(let z = object.length -1; z >= 0; z --){
+      object.pop();
+    }
+    revive();
+    deathScreen();
+  }
+  
+}
+
+function showControls(){
+  if(keyIsDown(67)){
+    healthState = "controls";
+  }
+}
+
+function deathScreen(){
+  condensedVariables.amount = 10;
+  numbers.counter = 0;
+  condensedVariables.speed = 1; 
+  rotator = 0;
+  fill("red");
+  textAlign(CENTER);
+  textSize(50);
+  text("You died, press R to restart.", width/2, height/2)
 }
 
 function thescore(){
   fill("red");
-  // textAlign(CENTER);
+  textAlign(LEFT);
   textSize(50);
   text("your have " + numbers.score + " points", width/25, height/10);
 }
@@ -65,6 +106,7 @@ function revive(){
     player.xInnitial = width/2
     player.yInnitial = height/2;
     healthState = "alive";
+    numbers.score = 0;
   }
 }
 
@@ -83,7 +125,7 @@ function mousePressed(){
 }
 
 function collisionAndDeath(){
-  for(let c = object.length - 1; c > 0; c--){
+  for(let c = object.length - 1; c >= 0; c--){
     let distanceAway = dist(player.xInnitial, player.yInnitial, object[c].x, object[c].y);
     let diameter = object[c].w + player.dimensions2;
     if (distanceAway < diameter){
@@ -170,17 +212,17 @@ function playerRotate(){
   if (healthState === "alive"){
     rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
     rect(0, 0, player.dimensions2, player.dimensions1);
-    for(let ball of projectiles){
-      fill("yellow");
-      circle(ball.x, ball.y, ball.size);
-      // if(keyIsDown(87) && movementState === "up"){
-      //   ball.y -= 15;
-      // }
-      // else if(keyIsDown(87)){
-      // }
-      ball.y -= 10;
-      ball.x += random(-2,2);
-    }
+    // for(let ball of projectiles){
+    //   fill("yellow");
+    //   circle(ball.x, ball.y, ball.size);
+    //   // if(keyIsDown(87) && movementState === "up"){
+    //   //   ball.y -= 15;
+    //   // }
+    //   // else if(keyIsDown(87)){
+    //   // }
+    //   ball.y -= 10;
+    //   ball.x += random(-2,2);
+    // }
   }
   pop();
 }
