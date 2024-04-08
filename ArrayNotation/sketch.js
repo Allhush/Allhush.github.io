@@ -141,7 +141,7 @@ function clickedAsteroid(x, y, theObject){
   let distanceAway = dist(x, y, theObject.x, theObject.y);
   let diameter = theObject.w;
   // console.log(distanceAway, diameter);
-  console.log(x, y, theObject.x, theObject.y, "true");
+  // console.log(x, y, theObject.x, theObject.y, "true");
   if(distanceAway < diameter){
     return true;
   }
@@ -153,12 +153,26 @@ function clickedAsteroid(x, y, theObject){
 
 function hittingProjectiles(){
   for(let i = object.length - 1; i >= 0; i--){
-    for(let ball of projectiles){
-      if(clickedAsteroid(ball.x, ball.y, object[i])){
-        object.splice(i, 1);
-        numbers.score += 1;
+    for(let v = projectiles.length - 1; v >= 0; v --){
+      if(clickedAsteroid(projectiles[v].x, projectiles[v].y, object[i])){
+        object.splice(i, 1); 
       }
+      // if(projectiles[v].x > width || projectiles[v].x < 0){
+      //   projectiles.splice(v, 1);
+      // }
+      if(projectiles[v].y > height || projectiles[v].y < 0){
+        projectiles.splice(v, 1);
+      }
+      // if(clickedAsteroid(projectiles[v].x, projectiles[v].y, object[i])){
+      //   projectiles.splice(v, 1); 
+      // }
     }
+    // for(let ball of projectiles){
+    //   if(clickedAsteroid(ball.x, ball.y, object[i])){
+    //     object.splice(i, 1);
+    //     numbers.score += 1;
+    //   }
+    // }
   } 
 }
 
@@ -224,25 +238,48 @@ function playerRotate(){
   if (healthState === "alive"){
     rect(0, 0 + 10, player.dimensions1 + 5, player.dimensions2);
     rect(0, 0, player.dimensions2, player.dimensions1);
-    for(let ball of projectiles){
-      fill("yellow");
-      circle(ball.x, ball.y, ball.size);
-      // if(keyIsDown(87) && movementState === "up"){
-      //   ball.y -= 15;
-      // }
-      // else if(keyIsDown(87)){
-      // }
+  }
+  pop();
+  for(let ball of projectiles){
+    fill("yellow");
+    circle(ball.x, ball.y, ball.size);
+    // if(keyIsDown(87) && movementState === "up"){
+    //   ball.y -= 15;
+    // }
+    // else if(keyIsDown(87)){
+    // }
+    if (rotator === 180 || rotator === -180){
+      ball.y += 10;
+      ball.x += random(-2,2);
+    }
+    else if (rotator === 360 || rotator === 0){
       ball.y -= 10;
       ball.x += random(-2,2);
     }
+    else if(rotator === 90 || rotator === -270){
+      ball.x += 10;
+      ball.y += random(-2,2);
+    }
+    else if(rotator === -90  || rotator === 270){
+      ball.x -= 10;
+      ball.y += random(-2,2);
+    }
+    if(rotator > 360){
+      rotator = 90;
+    }
+    if(rotator < -360){
+      rotator = -90;
+    }
+    // else if (rotator % 90 === 0){
+    //   ball.x -= 10;
+    //   ball.y += random(-2,2);
+    // }
   }
-  pop();
-
 }
 
 function mouseWheel(event){
-  rotator += event.delta;
-
+  rotator += 9*event.delta/10;
+  console.log(rotator);
 }
 
 
@@ -328,7 +365,7 @@ function moveProjectiles(){
   for(let ball = projectiles.length - 1; ball > 0; ball--){
     fill("yellow");
     circle(projectiles[ball].x, projectiles[ball].y, projectiles[ball].size);
-    projectiles[ball].y -= 10;
+    // projectiles[ball].y -= 10;
     // for(let i = object.length - 1; i > 0; i--){
     //   let distanceAway = dist(projectiles[ball].x, projectiles[ball].y, object[i].x, object[i].y);
     //   let diameter = object[i].w;
