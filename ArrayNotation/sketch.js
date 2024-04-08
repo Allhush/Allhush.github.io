@@ -157,9 +157,9 @@ function hittingProjectiles(){
       if(clickedAsteroid(projectiles[v].x, projectiles[v].y, object[i])){
         object.splice(i, 1); 
       }
-      // if(projectiles[v].x > width || projectiles[v].x < 0){
-      //   projectiles.splice(v, 1);
-      // }
+      if(projectiles[v].x > width || projectiles[v].x < 0){
+        projectiles.splice(v, 1);
+      }
       if(projectiles[v].y > height || projectiles[v].y < 0){
         projectiles.splice(v, 1);
       }
@@ -250,19 +250,19 @@ function playerRotate(){
     // }
     if (rotator === 180 || rotator === -180){
       ball.y += 10;
-      ball.x += random(-2,2);
+      // ball.x += random(-2,2);
     }
     else if (rotator === 360 || rotator === 0){
       ball.y -= 10;
-      ball.x += random(-2,2);
+      // ball.x += random(-2,2);
     }
     else if(rotator === 90 || rotator === -270){
       ball.x += 10;
-      ball.y += random(-2,2);
+      // ball.y += random(-2,2);
     }
     else if(rotator === -90  || rotator === 270){
       ball.x -= 10;
-      ball.y += random(-2,2);
+      // ball.y += random(-2,2);
     }
     if(rotator > 360){
       rotator = 90;
