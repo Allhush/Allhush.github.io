@@ -6,7 +6,7 @@ let object = [];
 let projectiles = [];
 let condensedVariables = {
   speed: 1,
-  amount: 10,
+  amount: 1,
 };
 
 let state = "on";
@@ -114,8 +114,9 @@ function revive(){
 
 function mousePressed(){
   if(rotatorState === 1){
-    spawnProjectiles(0, 0);
-  } 
+    spawnProjectiles(player.xInnitial, player.yInnitial);
+  }
+
   // for(let i = object.length - 1; i >= 0; i--){
   //   for(let ball of projectiles){
   //     if(clickedAsteroid(mouseX, mouseY, object[i])){
@@ -145,7 +146,7 @@ function clickedAsteroid(x, y, theObject){
     return true;
   }
   else{
-    console.log("false");
+    // console.log("false");
     return false;
   }
 }
@@ -210,7 +211,7 @@ function playerBoogey(){
   }
   else if (player.yInnitial <= 0){
     player.yInnitial = height -1;
-    player.xInnitial = width - player.yInnitial;
+    player.xInnitial = width - player.xInnitial;
   }
 }
 
@@ -236,10 +237,12 @@ function playerRotate(){
     }
   }
   pop();
+
 }
 
 function mouseWheel(event){
   rotator += event.delta;
+
 }
 
 
