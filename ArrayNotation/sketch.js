@@ -167,7 +167,7 @@ function collisionAndDeath(){
 
 // destroys asteroids when they are hit by projectile
 function clickedAsteroid(x, y, theObject){
-  console.log(projectiles[0].y)
+  console.log(projectiles[0].y);
   let distanceAway = dist(x, y, theObject.x, theObject.y);
   let diameter = theObject.w;
   // console.log(distanceAway, diameter);
@@ -340,10 +340,10 @@ function test1(){
 // spawns the asteroids
 function spawnObject(innitialX, innitialY){
   if (innitialX > player.xInnitial -60 || innitialX < player.xInnitial +60){
-    innitialX + 100
+    innitialX + 100;
   }
   if (innitialY > player.yInnitial -60 || innitialY < player.yInnitial +60){
-    innitialY + 100
+    innitialY + 100;
   }
   let creation = {
     x: innitialX,

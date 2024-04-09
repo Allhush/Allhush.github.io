@@ -8,7 +8,7 @@
 - [Generative Art](genart)
 - [Terrain generation Perlin noise](terrian)
 - [bubble movement](bubble)
-- 
+- [2D grid](2DGrid)
 
 
 ## Projects
