@@ -18,22 +18,27 @@ let grid;
 const GRID_SIZE = 10;
 
 let cellSize;
+let state = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
   // this is dumb, check for right way later
   cellSize = height/grid.length;
+  noStroke();
 }
 
 function keyPressed(){
   if(key === "r"){
     grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
   }
+  if(key === "e"){
+    grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
+  }
 }
 
 function draw() {
-  background(220);
+  background("red");
   displayGrid();
 }
 
@@ -67,18 +72,44 @@ function generateRandomGrid(columns, rows){
   return emptyArray;
 }
 
-function mousePressed(){
-  for(let y = 0; y < GRID_SIZE; y++){
-    for(let x = 0; x < GRID_SIZE; x ++){
-      if (mouseX > x*10 - 5 && mouseX < x*10 + 5 && mouseY > y*10 - 5 && mouseY < y*10 + 5){
-        if(grid[y][x] === 0){
-          grid[y][x] = 1;
-        }
-        else{
-          grid[y][x];
-        }
-        
-      }
+function generateEmptyGrid(columns, rows){
+  let emptyArray = [];
+  for(let y = 0; y < rows; y ++){
+    emptyArray.push([]);
+    for(let x = 0; x < columns; x ++){
+      emptyArray[y].push(0);
     }
+  }
+  return emptyArray;
+}
+
+function mousePressed(){
+  let v = Math.floor(mouseX/cellSize);
+  let q = Math.floor(mouseY/cellSize);
+  if(v < GRID_SIZE && q < GRID_SIZE){
+    toggleCell(v,q);
+  }
+  if(v - 1 < GRID_SIZE && v - 1 > 0 && q < GRID_SIZE){
+    toggleCell(v,q);
+  }
+  if(v + 1 < GRID_SIZE && v + 1 > 0 && q < GRID_SIZE){
+    toggleCell(v,q);
+  }
+  if(q + 1 < GRID_SIZE && q + 1 > 0 && v < GRID_SIZE){
+    toggleCell(v,q);
+  }
+  if(q - 1 < GRID_SIZE && q - 1 > 0 && v < GRID_SIZE){
+    toggleCell(v,q);
+  }
+
+}
+
+
+function toggleCell(x, y){
+  if(grid[x][y] === 1){
+    grid[x][y] = 0;
+  }
+  else if(grid[x][y] === 0){
+    grid[x][y] = 1;
   }
 }
