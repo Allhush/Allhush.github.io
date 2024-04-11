@@ -16,16 +16,28 @@
 // if randomizing generation do this
 let grid;
 const GRID_SIZE = 10;
+let stateNS = "n";
 
 let cellSize;
 let state = 0;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  if (windowHeight > windowWidth){
+    createCanvas(windowWidth, windowWidth);
+  }
+  else{
+    createCanvas(windowHeight, windowHeight);
+  }
   grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
-  // this is dumb, check for right way later
   cellSize = height/grid.length;
   noStroke();
+}
+
+
+
+function draw() {
+  background("red");
+  displayGrid();
 }
 
 function keyPressed(){
@@ -35,11 +47,22 @@ function keyPressed(){
   if(key === "e"){
     grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
   }
+  if(key === "n"){
+    stateNS = "n";
+  }
+  if(key === "s"){
+    stateNS = "s";
+  }
 }
 
-function draw() {
-  background("red");
-  displayGrid();
+function windowResized() {
+  if (windowHeight > windowWidth){
+    resizeCanvas(windowWidth, windowWidth);
+  }
+  else{
+    resizeCanvas(windowHeight, windowHeight);
+  }
+  cellSize = height/grid.length;
 }
 
 function displayGrid(){
@@ -86,30 +109,26 @@ function generateEmptyGrid(columns, rows){
 function mousePressed(){
   let v = Math.floor(mouseX/cellSize);
   let q = Math.floor(mouseY/cellSize);
-  if(v < GRID_SIZE && q < GRID_SIZE){
+  if(stateNS === "n"){
     toggleCell(v,q);
+    toggleCell(v + 1,q);
+    toggleCell(v,q +1);
+    toggleCell(v-1,q);
+    toggleCell(v,q-1);
   }
-  if(v - 1 < GRID_SIZE && v - 1 > 0 && q < GRID_SIZE){
-    toggleCell(v,q);
-  }
-  if(v + 1 < GRID_SIZE && v + 1 > 0 && q < GRID_SIZE){
-    toggleCell(v,q);
-  }
-  if(q + 1 < GRID_SIZE && q + 1 > 0 && v < GRID_SIZE){
-    toggleCell(v,q);
-  }
-  if(q - 1 < GRID_SIZE && q - 1 > 0 && v < GRID_SIZE){
+  else if(stateNS === "s"){
     toggleCell(v,q);
   }
 
 }
 
-
 function toggleCell(x, y){
-  if(grid[x][y] === 1){
-    grid[x][y] = 0;
-  }
-  else if(grid[x][y] === 0){
-    grid[x][y] = 1;
+  if(x <= GRID_SIZE && y <= GRID_SIZE && 0 <= x && 0 <= y){
+    if(grid[y][x] === 1){
+      grid[y][x] = 0;
+    }
+    else if(grid[y][x] === 0){
+      grid[y][x] = 1;
+    }
   }
 }
