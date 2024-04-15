@@ -15,11 +15,9 @@
 
 // if randomizing generation do this
 let grid;
-const GRID_SIZE = 10;
-let stateNS = "n";
-
 let cellSize;
-let state = 0;
+const GRID_SIZE = 30;
+let stateNS = "n";
 let isAutoPlayOn = false;
 
 function setup() {
@@ -31,15 +29,23 @@ function setup() {
   }
   grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
   cellSize = height/grid.length;
-  noStroke();
+}
+
+function windowResized() {
+  if (windowHeight > windowWidth){
+    resizeCanvas(windowWidth, windowWidth);
+  }
+  else{
+    resizeCanvas(windowHeight, windowHeight);
+  }
+  cellSize = height/grid.length;
 }
 
 
-
 function draw() {
-  background("red");
-  if(isAutoPlayOn){
-    grid = updateGrid;
+  background(220);
+  if (isAutoPlayOn && frameCount % 5 === 0) {
+    grid = updateGrid();
   }
   displayGrid();
 }
@@ -73,6 +79,8 @@ function updateGrid(){
   for(let y = 0; y < GRID_SIZE; y ++){
     for(let x = 0; x < GRID_SIZE; x ++){
       let neighbors = 0;
+
+
       // look at neighbor cells
       for(let i = -1; i < 1; i++){
         for(let j = -1; j < 1; j++){
@@ -84,7 +92,7 @@ function updateGrid(){
       }
 
       // dont count self
-      neighbors -+ grid[y][x];
+      neighbors -= grid[y][x];
 
       // apply rules
       if(grid[y][x] === 1){// alive
@@ -97,22 +105,17 @@ function updateGrid(){
       }
       if(grid[y][x]===0){
         if(neighbors === 3){
-          nextTurn[y][x] === 1;
+          nextTurn[y][x] = 1;
+        }
+        else{
+          nextTurn[y][x] = 0;
         }
       }
     }
   }
   return nextTurn;
 }
-function windowResized() {
-  if (windowHeight > windowWidth){
-    resizeCanvas(windowWidth, windowWidth);
-  }
-  else{
-    resizeCanvas(windowHeight, windowHeight);
-  }
-  cellSize = height/grid.length;
-}
+
 
 function displayGrid(){
   for(let y = 0; y < grid.length; y++){
