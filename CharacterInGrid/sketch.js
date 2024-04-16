@@ -1,11 +1,11 @@
 // Character in 2d grid
 // Alliam Hushagen
-// April 9th 2024
+// April 15th 2024
 
 
 // if randomizing generation do this
 let grid;
-const GRID_SIZE = 100;
+const GRID_SIZE = 30;
 const PLAYER = 2;
 const OPENTILE = 0;
 const IMPASSIBLE = 1;
@@ -16,10 +16,15 @@ let player = {
 let cellSize;
 let grassIMG;
 let wallIMG;
+let towntheme;
+let state = "start screen";
+let objection;
 
 function preload(){
   grassIMG = loadImage("grass1.png");
   wallIMG = loadImage("stone wall 1.png");
+  towntheme = loadSound("TownTheme.mp3");
+  objection = loadSound("spell.wav");
 }
 
 
@@ -35,12 +40,22 @@ function setup() {
 
   // add player to the grid
   grid[player.y][player.x] = PLAYER;
+
+  towntheme.setVolume(0.4);
+  objection.setVolume(1,0);
 }
 
 
 
 function draw() {
-  displayGrid();
+  
+  if (state === "start screen"){
+    background(0);
+  }
+  else if (state === "game"){
+    background(220);
+    displayGrid();
+  }
 }
 
 function keyPressed(){
@@ -63,9 +78,15 @@ function keyPressed(){
   if(key === "d"){
     movePlayer(player.x + 1, player.y + 0);
   }
+  if(key === " " && state === "start screen"){
+    state = "game";
+    towntheme.loop();
+  }
 }
 
 function movePlayer(x,y){
+  
+
   if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y >= 0 && grid[y][x] === OPENTILE){ // don't move off the grid and don't go into closed tiles
     // previous player location
     let oldY = player.y;
@@ -79,6 +100,9 @@ function movePlayer(x,y){
     player.y = y;
     grid[player.y][player.x] = PLAYER;
     
+  }
+  else{
+    objection.play();
   }
 }
 function windowResized() {

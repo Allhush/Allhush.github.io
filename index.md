@@ -9,7 +9,7 @@
 - [Terrain generation Perlin noise](terrian)
 - [bubble movement](bubble)
 - [2D grid](2DGrid)
-
+- [2D grid project](GridProject)
 
 ## Projects
 - [Interactive Scene](scene)
