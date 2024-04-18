@@ -16,6 +16,7 @@
 const GRID_SIZE = 21;
 let grid = [];
 let cellSize = 20;
+let theMap;
 
 
 function setup() {
