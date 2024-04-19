@@ -85,8 +85,6 @@ function keyPressed(){
 }
 
 function movePlayer(x,y){
-  
-
   if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y >= 0 && grid[y][x] === OPENTILE){ // don't move off the grid and don't go into closed tiles
     // previous player location
     let oldY = player.y;
