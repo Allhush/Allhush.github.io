@@ -7,7 +7,7 @@
 // make map // done
 // make player movement // done
 // Ai ghosts
-// power pills
+// power pills // need ghosts to finish
 // regular pellets // done 
 // death stuff
 // actual sprites
@@ -18,7 +18,7 @@ const POINTSPOT = 0;
 const WALL = 1;
 const PLAYER = 2;
 const NOPOINT = 3;
-const GHOST = 4;
+const GHOST1 = 4;
 const TELEPORT1 = 5;
 const TELEPORT2 = 10;
 const GHOSTPOINT = 6;
@@ -32,11 +32,17 @@ let cellSize;
 let theMap1;
 let moveState = "stopped";
 let q;
-let state = "start";
+let gameState = "start";
+let pacState = "weak";
 let score = 0;
 let pacMan = {
   x: 10,
   y: 16,
+  pacPower: 0,
+};
+let ghost1 = {
+  x:10,
+  y:10,
 };
 
 function preload(){
@@ -60,6 +66,7 @@ function draw() {
   handleKeys();
   // movePacMan();
   makePac();
+  makeGhost1();
 
 }
 
@@ -94,7 +101,7 @@ function toggleCell(x, y) {
 function handleKeys(){
   // if (key === "z"){
   //   grid = theMap1.one;
-  //   state = "go";
+  //   gameState = "go";
   // }
   if(keyIsDown(KEY_S) && frameCount % 10 === 0){
     movePacMan(pacMan.x, pacMan.y + 1);
@@ -119,18 +126,51 @@ function handleKeys(){
   // }
 }
 
+function makeGhost1(){
+  if(gameState === "go"){
+    grid[ghost1.y][ghost1.x] = GHOST1;
+  }
+}
+
+function moveGhosts(x, y){
+  if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT)){
+
+  }
+}
 function movePacMan(x, y){
-  if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT)){
+  if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === POWERPILL)){
     let oldX = pacMan.x;
     let oldY = pacMan.y;
     if (grid[y][x] === POINTSPOT){
       score ++;
+      pacMan.x = x;
+      pacMan.y = y;
+      grid[y][x] = PLAYER;
+      grid[oldY][oldX] = NOPOINT;
     }
+    else if(grid[y][x] === NOPOINT){
+      pacMan.x = x;
+      pacMan.y = y;
+      grid[y][x] = PLAYER;
+      grid[oldY][oldX] = NOPOINT;
+    }
+    else if(grid[y][x] === POWERPILL){
+      score ++;
+      pacMan.x = x;
+      pacMan.y = y;
+      grid[y][x] = PLAYER;
+      grid[oldY][oldX] = NOPOINT;
+      pacState = "strong";
+    }
+    // else if(grid[y][x] === TELEPORT1){
+    //   pacMan.x = x;
+    //   pacMan.y = y;
+    //   grid[y][x] = PLAYER;
+    // }
+    // else if(grid[y][x] === TELEPORT2){
 
-    pacMan.x = x;
-    pacMan.y = y;
-    grid[y][x] = PLAYER;
-    grid[oldY][oldX] = NOPOINT; 
+    // }
+     
   }
   q = millis() + 240;
 }
@@ -138,8 +178,9 @@ function movePacMan(x, y){
 function keyPressed(){
   if (key === "z"){
     grid = theMap1.one;
-    state = "go";
+    gameState = "go";
     q = millis();
+    powerPellet();
   }
 }
 
@@ -165,6 +206,12 @@ function displayGrid() {
       else if(grid[y][x] === GHOSTPOINT){
         fill("blue");
       }
+      else if(grid[y][x] === POWERPILL){
+        fill("green");
+      }
+      else if(grid[y][x] === GHOST1){
+        fill(170);
+      }
       square(x * cellSize, y * cellSize, cellSize);
     }
   }
@@ -173,8 +220,33 @@ function displayGrid() {
 
 
 function makePac(){
-  if(state === "go"){
+  if(gameState === "go"){
     q = millis();
     grid[pacMan.y][pacMan.x] = PLAYER;
+  }
+}
+
+function powerPellet(){
+  let pow1 = {
+    x : Math.round(random(1, 19)),
+    y : Math.round(random(1, 19)),
+    x1:Math.round(random(1, 19)),
+    y1:Math.round(random(1, 19)),
+    x2:Math.round(random(1, 19)),
+    y2:Math.round(random(1, 19)),
+    x3:Math.round(random(1, 19)),
+    y3:Math.round(random(1, 19)),
+  };
+  if(grid[pow1.y][pow1.x] !== WALL){
+    grid[pow1.y][pow1.x] = POWERPILL;
+  }
+  if(grid[pow1.y1][pow1.x1] !== WALL){
+    grid[pow1.y1][pow1.x1] = POWERPILL;
+  }
+  if(grid[pow1.y2][pow1.x2] !== WALL){
+    grid[pow1.y2][pow1.x2] = POWERPILL;
+  }
+  if(grid[pow1.y3][pow1.x3] !== WALL){
+    grid[pow1.y3][pow1.x3] = POWERPILL;
   }
 }
