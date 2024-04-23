@@ -40,10 +40,12 @@ let pacMan = {
   y: 16,
   pacPower: 0,
 };
-let ghost1 = {
+let theGhost1 = {
   x:10,
   y:10,
 };
+let ghostmove;
+let ghostState = "in";
 
 function preload(){
   theMap1 = loadJSON("Map1.json");
@@ -64,10 +66,9 @@ function draw() {
   background(220);
   displayGrid();
   handleKeys();
-  // movePacMan();
   makePac();
   makeGhost1();
-
+  ghostly();
 }
 
 function emptyGrid(rows, columns){
@@ -128,15 +129,50 @@ function handleKeys(){
 
 function makeGhost1(){
   if(gameState === "go"){
-    grid[ghost1.y][ghost1.x] = GHOST1;
+    grid[theGhost1.y][theGhost1.x] = GHOST1;
   }
 }
 
-// function moveGhosts(x, y){
-//   if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT)){
+function moveGhosts(x, y, aGhost){
+  if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT || grid[y][x] === POWERPILL)){
+    let oldX = aGhost.x;
+    let oldY = aGhost.y;
+    if (grid[y][x] === POINTSPOT){
+      aGhost.x = x;
+      aGhost.y = y;
+      grid[y][x] = GHOST1;
+      grid[oldY][oldX] = POINTSPOT;
+    }
+    else if(grid[y][x] === NOPOINT){
+      aGhost.x = x;
+      aGhost.y = y;
+      grid[y][x] = GHOST1;
+      grid[oldY][oldX] = NOPOINT;
+    }
+    else if(grid[y][x] === POWERPILL){
+      aGhost.x = x;
+      aGhost.y = y;
+      grid[y][x] = GHOST1;
+      grid[oldY][oldX] = POWERPILL;
+    }
+  }
+}
 
-//   }
-// }
+function ghostly(ghost1){
+  if(ghost1.x === 10 && ghost1.y === 10 && frameCount % 10 === 0 && frameCount >= 100 && gameState === "go"){
+    ghostState = "out";
+    ghost1.x = 10;
+    ghost1.y = 8;
+  }
+  ghostmove = Math.round(random(1,2));
+  if(ghostState === "out" && frameCount % 10 === 0 && ghostmove === 2){
+    moveGhosts(ghost1.x + Math.round(random(-1,1)), ghost1.y + 0, ghost1);
+  }
+  else if(ghostState === "out" && frameCount % 10 === 0 && ghostmove === 1){
+    moveGhosts(ghost1.x + 0, ghost1.y + Math.round(random(-1,1)), ghost1);
+  }
+}
+
 function movePacMan(x, y){
   if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === POWERPILL)){
     let oldX = pacMan.x;
