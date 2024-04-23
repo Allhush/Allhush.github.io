@@ -132,11 +132,11 @@ function makeGhost1(){
   }
 }
 
-function moveGhosts(x, y){
-  if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT)){
+// function moveGhosts(x, y){
+//   if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT)){
 
-  }
-}
+//   }
+// }
 function movePacMan(x, y){
   if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === POWERPILL)){
     let oldX = pacMan.x;
