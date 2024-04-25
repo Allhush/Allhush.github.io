@@ -5,8 +5,8 @@
 
 // To Do
 // make map // done
-// make player movement // need to fix teleport
-// Ai ghosts // need to fix teleport
+// make player movement // done
+// Ai ghosts // done
 // power pills // need ghosts to finish // need to fix generation
 // regular pellets // done 
 // death stuff // need to finish movement first
@@ -148,7 +148,7 @@ function makeGhost1(){
 // moves the ghost around
 function moveGhosts(x, y, aGhost, GHOSTCOLOUR){
   // makes sure ghost is in bounds
-  if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT || grid[y][x] === POWERPILL || grid[y][x] === PLAYER)){
+  if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT || grid[y][x] === POWERPILL || grid[y][x] === PLAYER)){
     // finds ghosts old position so that it can be replaced later
     let oldX = aGhost.x;
     let oldY = aGhost.y;
@@ -171,6 +171,22 @@ function moveGhosts(x, y, aGhost, GHOSTCOLOUR){
       grid[y][x] = GHOSTCOLOUR;
       grid[oldY][oldX] = POWERPILL;
     }
+    // transfers ghosts from one side of the grid to the other if they go onto the red teleport pads
+    else if(grid[y][x] === TELEPORT1){
+      aGhost.x = 19;
+      aGhost.y = y;
+      grid[y][19] = GHOST1;
+      grid[oldY][oldX] = NOPOINT;
+    }
+    else if(grid[y][x] === TELEPORT2){
+      aGhost.x = 1;
+      aGhost.y = y;
+      grid[y][1] = GHOST1;
+      grid[oldY][oldX] = NOPOINT;
+    } 
+    else if(grid[y][x] === PLAYER && pacState === "weak"){
+      gameState = "dead";
+    }
   }
 }
 
@@ -185,17 +201,17 @@ function ghostly(ghost1, GHOSTCOLOURS){
   // decides whether to move on x or y axis
   ghostmove = Math.round(random(1,2));
   // passes along values so that the ghost can move, might change later to make ghosts faster
-  if(ghostState === "out" && frameCount % 10 === 0 && ghostmove === 2){
+  if(ghostState === "out" && frameCount % 8 === 0 && ghostmove === 2){
     moveGhosts(ghost1.x + Math.round(random(-1,1)), ghost1.y + 0, ghost1, GHOSTCOLOURS);
   }
-  else if(ghostState === "out" && frameCount % 10 === 0 && ghostmove === 1){
+  else if(ghostState === "out" && frameCount % 8 === 0 && ghostmove === 1){
     moveGhosts(ghost1.x + 0, ghost1.y + Math.round(random(-1,1)), ghost1, GHOSTCOLOURS);
   }
 }
 
 function movePacMan(x, y){
   // checks to see if player is in bounds
-  if(x < GRID_SIZE && y < GRID_SIZE && x > 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === POWERPILL || grid[y][x] === theGhost1)){
+  if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y >= 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === POWERPILL || grid[y][x] === GHOST1)){
     // used to replace previous square
     let oldX = pacMan.x;
     let oldY = pacMan.y;
@@ -205,13 +221,29 @@ function movePacMan(x, y){
       pacMan.x = x;
       pacMan.y = y;
       grid[y][x] = PLAYER;
-      grid[oldY][oldX] = NOPOINT;
+      if(oldX === 0){
+        grid[oldY][oldX] = TELEPORT1;
+      }
+      else if(oldX === GRID_SIZE - 1){
+        grid[oldY][oldX] = TELEPORT2;
+      }
+      else{
+        grid[oldY][oldX] = NOPOINT;
+      }
     }
     else if(grid[y][x] === NOPOINT){
       pacMan.x = x;
       pacMan.y = y;
       grid[y][x] = PLAYER;
-      grid[oldY][oldX] = NOPOINT;
+      if(oldX === 0){
+        grid[oldY][oldX] = TELEPORT1;
+      }
+      else if(oldX === GRID_SIZE - 1){
+        grid[oldY][oldX] = TELEPORT2;
+      }
+      else{
+        grid[oldY][oldX] = NOPOINT;
+      }
     }
     else if(grid[y][x] === POWERPILL){
       score ++;
@@ -222,16 +254,19 @@ function movePacMan(x, y){
       // makes ghost venerable for 5 seconds
       pillTimer = millis() + 5000;
     }
-    // not working right now but will be used to teleport later
-    // else if(grid[y][x] === TELEPORT1){
-    //   pacMan.x = x;
-    //   pacMan.y = y;
-    //   grid[y][x] = PLAYER;
-    // }
-    // else if(grid[y][x] === TELEPORT2){
-
-    // }
-     
+    // transfers player from one side of the grid to the other if they go onto the red teleport pads
+    else if(grid[y][x] === TELEPORT1){
+      pacMan.x = 19;
+      pacMan.y = y;
+      grid[y][19] = PLAYER;
+      grid[oldY][oldX] = NOPOINT;
+    }
+    else if(grid[y][x] === TELEPORT2){
+      pacMan.x = 1;
+      pacMan.y = y;
+      grid[y][1] = PLAYER;
+      grid[oldY][oldX] = NOPOINT;
+    } 
   }
   // q = millis() + 240;
 }
