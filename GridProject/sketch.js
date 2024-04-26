@@ -7,9 +7,13 @@
 // make map // done
 // make player movement // done
 // Ai ghosts // done
-// power pills // need ghosts to finish // need to fix generation
 // regular pellets // done 
-// death stuff // need to finish movement first
+// power pills // need to fix generation // pretty close
+// death stuff // pretty much done, need to finish power pills first
+// add more ghosts
+// music?
+// fix ghost moving stuff
+// 
 // actual sprites // will do this eventually
 // ??? to be determined
 
@@ -58,6 +62,12 @@ let theGhost1 = {
 let ghostmove;
 // gets ghosts out of little tunnel thing
 let ghostState = "in";
+// checks if pills can spawn or not
+let pillState = "sober";
+// holds power pill variables
+let powerPills = [];
+// checks how many pills there are
+let pillCounter = 0;
 
 function preload(){
   // loads the map
@@ -82,11 +92,18 @@ function setup() {
 
 function draw() {
   background(220);
-  displayGrid();
-  handleKeys();
-  makePac();
-  makeGhost1();
-  strength();
+  if(gameState === "go"){
+    displayGrid();
+    handleKeys();
+    makePac();
+    makeGhost1();
+    strength();
+    pacGhostCollison();
+
+    
+    // generatePowerPellet();
+    // displayPowerPellet();
+  }
 }
 
 // generates grid to paste map onto
@@ -98,6 +115,7 @@ function emptyGrid(rows, columns){
     }
   }
 }
+
 
 // not in use
 function mousePressed(){
@@ -186,6 +204,10 @@ function moveGhosts(x, y, aGhost, GHOSTCOLOUR){
     } 
     else if(grid[y][x] === PLAYER && pacState === "weak"){
       gameState = "dead";
+      // aGhost.x = x;
+      // aGhost.y = y;
+      // grid[y][x] = PLAYER;
+      // grid[oldY][oldX] = NOPOINT;
     }
   }
 }
@@ -267,6 +289,12 @@ function movePacMan(x, y){
       grid[y][1] = PLAYER;
       grid[oldY][oldX] = NOPOINT;
     } 
+    else if(grid[y][x] === GHOST1){
+      pacMan.x = x;
+      pacMan.y = y;
+      grid[y][x] = PLAYER;
+      grid[oldY][oldX] = NOPOINT;
+    }
   }
   // q = millis() + 240;
 }
@@ -277,7 +305,10 @@ function keyPressed(){
     grid = theMap1.one;
     gameState = "go";
     q = millis();
-    powerPellet();
+    for(let q = 0; q < 8; q ++){
+      generatePowerPellet();
+      displayPowerPellet();
+    }
   }
 }
 
@@ -285,7 +316,9 @@ function keyPressed(){
 function pacGhostCollison(){
   if(theGhost1.y === pacMan.y && theGhost1.x === pacMan.x){
     if(pacState === "strong"){
-      // filler text for now
+      theGhost1.x = 10;
+      theGhost1.y = 8;
+      score += 100;
     }
     else{
       gameState = "dead";
@@ -301,9 +334,9 @@ function strength(){
   else{
     pacState = "weak";
   }
-  // if(frameCount% 10 === 0){
-  //   console.log(pacState);
-  // }
+  if(frameCount%10 === 0){
+    console.log(pacState);
+  }
 }
 
 // displays the grid
@@ -349,28 +382,35 @@ function makePac(){
 }
 
 // makes coordinates for power pellets
-function powerPellet(){
+function generatePowerPellet(){
+// generates coordinates for power pellet
   let pow1 = {
     x : Math.round(random(1, 19)),
     y : Math.round(random(1, 19)),
-    x1:Math.round(random(1, 19)),
-    y1:Math.round(random(1, 19)),
-    x2:Math.round(random(1, 19)),
-    y2:Math.round(random(1, 19)),
-    x3:Math.round(random(1, 19)),
-    y3:Math.round(random(1, 19)),
   };
-  // ensures that power pellets can be there
-  if(grid[pow1.y][pow1.x] !== WALL){
-    grid[pow1.y][pow1.x] = POWERPILL;
+  // checks to see if it's allowed to spawn a PowerP
+  if(pillState === "sober"){
+    powerPills.push(pow1);
+    pillCounter ++;
   }
-  if(grid[pow1.y1][pow1.x1] !== WALL){
-    grid[pow1.y1][pow1.x1] = POWERPILL;
+  // checks amount of powerP's
+  if (pillCounter >= 4){
+    pillState = "intoxicated";
   }
-  if(grid[pow1.y2][pow1.x2] !== WALL){
-    grid[pow1.y2][pow1.x2] = POWERPILL;
-  }
-  if(grid[pow1.y3][pow1.x3] !== WALL){
-    grid[pow1.y3][pow1.x3] = POWERPILL;
+}
+
+// shows powerP's
+function displayPowerPellet(){
+  for(let i = powerPills.length - 1; i >= 0; i --){
+    // makes sure spawning coordinates are valid
+    if(grid[powerPills[i].y][powerPills[i].x] !== WALL && grid[powerPills[i].y][powerPills[i].x] !== GHOSTPOINT){
+      grid[powerPills[i].y][powerPills[i].x] = POWERPILL;
+    }
+    // gets rid of invald coordinates to spawn powerP's and requests another PowerP to be spawned
+    else{
+      powerPills.splice(i, 1);
+      pillState = "sober";
+      pillCounter --;
+    }
   }
 }
