@@ -78,10 +78,16 @@ let pillState = "sober";
 let powerPills = [];
 // checks how many pills there are
 let pillCounter = 0;
+let ghost1Image;
+let ghost2Image;
+let ghost3Image;
+let normalPelletImage;
+let powerPelletImage
 
 function preload(){
   // loads the map
   theMap1 = loadJSON("Map1.json");
+  ghost1Image = loadImage("Assets/ghost1.png");
 }
 
 function setup() {
@@ -455,7 +461,8 @@ function displayGrid() {
         fill("green");
       }
       else if(grid[y][x] === GHOST1){
-        fill(170);
+        // fill(170);
+        image(ghost1Image, x * cellSize, y * cellSize, cellSize);
       }
       else if(grid[y][x] === GHOST2){
         fill("orange");
