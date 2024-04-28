@@ -33,6 +33,7 @@ const KEY_W = 87;
 const KEY_A = 65;
 const KEY_S = 83;
 const KEY_D = 68;
+const GHOSTPOINT2 = 11;
 // holds information for the grid
 let grid = [];
 // finds out how large the grid can be
@@ -82,12 +83,32 @@ let ghost1Image;
 let ghost2Image;
 let ghost3Image;
 let normalPelletImage;
-let powerPelletImage
+let powerPelletImage;
+let pacImg1;
+let wallImg;
+let noPointImg;
+let scaredGhostImg;
+let pacImg0;
+let pacTravelState = "right";
+// sees how close player is to winning
+let winCounter = 0;
 
 function preload(){
   // loads the map
   theMap1 = loadJSON("Map1.json");
-  ghost1Image = loadImage("Assets/ghost1.png");
+  ghost1Image = loadImage("assets/ghost1.png");
+  pointspot = loadImage("assets/normalPellet.png");
+  ghost2Image = loadImage("assets/ghost2.png");
+  ghost3Image = loadImage("assets/ghost3.png");
+  powerPelletImage = loadImage("assets/powerPellet.png");
+  pacImg1 = loadImage("assets/pacManRight.png");
+  wallImg = loadImage("assets/wall.png");
+  noPointImg = loadImage("assets/noPoint.png");
+  pacImg2 = loadImage("assets/pacManDown.png");
+  pacImg3 = loadImage("assets/pacManLeft.png");
+  pacImg4= loadImage("assets/pacManUp.png");
+  pacImg0 = loadImage("assets/closedPacMan.png")
+  scaredGhostImg = loadImage("assets/scaredGhost.png");
 }
 
 function setup() {
@@ -107,7 +128,8 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(0);
+  gameStart();
   if(gameState === "go"){
     displayGrid();
     handleKeys();
@@ -117,16 +139,31 @@ function draw() {
     makeGhosts(theGhost3, GHOST3);
     strength();
     pacGhostCollison();
+    openClose();
+    scoreKeep();
+    checkForWin();
   }
+  youWon();
   deathScreen();
 }
 
-function deathScreen(){
-  if(gameState === "dead"){
+function gameStart(){
+  if(gameState === "start"){
+    fill("red");
+    textAlign(CENTER, CENTER);
+    textSize(30);
+    text("Press z to start", width/2, height/2);
+  }
+}
+
+function youWon(){
+  if(gameState === "won"){
     background(0);
+    // gets rid of remaining powerpills
     for(let q = 0; q < powerPills.length; q ++){
       powerPills.pop();
     }
+    // resets all coordinates
     pacMan.x = 10;
     pacMan.y = 16; 
     theGhost1.x = 10;
@@ -135,19 +172,75 @@ function deathScreen(){
     theGhost2.y =8;
     theGhost3.x = 9;
     theGhost3.y =8;
+    // resets powerpill function
     pillCounter = 0;
     pillState = "sober";
+    // resets map
     for(let y = 0; y < grid.length; y ++){
       for(let x = 0; x < grid[0].length; x ++){
         if(grid[y][x] === NOPOINT  || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3 || grid[y][x] === PLAYER || grid[y][x] === POWERPILL){
           grid[y][x] = POINTSPOT;
         }
+        
       }
     }
+    grid[10][9] = GHOSTPOINT2;
+    grid[10][10] = GHOSTPOINT2;
+    grid[10][11] = GHOSTPOINT2;
     textAlign(CENTER, CENTER);
     textSize(20);
     fill("red");
-    text("you died", width/2, height/2)
+    text("you won!", width/2, height/2);
+    text("your score was " + score, width/2, 5*height/8);
+  }
+}
+
+// keeps score for the player
+function scoreKeep(){
+  fill("yellow");
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  text("Score "+score, 0, 0, width, cellSize);
+}
+
+// creates death screen for player
+function deathScreen(){
+  // checks if player is alive
+  if(gameState === "dead"){
+    background(0);
+    // gets rid of remaining powerpills
+    for(let q = 0; q < powerPills.length; q ++){
+      powerPills.pop();
+    }
+    // resets all coordinates
+    pacMan.x = 10;
+    pacMan.y = 16; 
+    theGhost1.x = 10;
+    theGhost1.y =8;
+    theGhost2.x = 11;
+    theGhost2.y =8;
+    theGhost3.x = 9;
+    theGhost3.y =8;
+    // resets powerpill function
+    pillCounter = 0;
+    pillState = "sober";
+    // resets map
+    for(let y = 0; y < grid.length; y ++){
+      for(let x = 0; x < grid[0].length; x ++){
+        if(grid[y][x] === NOPOINT  || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3 || grid[y][x] === PLAYER || grid[y][x] === POWERPILL){
+          grid[y][x] = POINTSPOT;
+        }
+        
+      }
+    }
+    grid[10][9] = GHOSTPOINT2;
+    grid[10][10] = GHOSTPOINT2;
+    grid[10][11] = GHOSTPOINT2;
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    fill("red");
+    text("you died", width/2, height/2);
+    text("your score was " + score, width/2, 5*height/8);
   }
 }
 
@@ -161,6 +254,21 @@ function emptyGrid(rows, columns){
   }
 }
 
+// checks if the player has won
+function checkForWin(){
+  for(let y = 0; y < grid.length; y++){
+    for(let x = 0; x < grid[y].length; x ++){
+      if(grid[y][x] === POINTSPOT || grid[y][x] === POWERPILL){
+        winCounter ++;
+      }
+    }
+  }
+  // console.log(winCounter)
+  if(winCounter === 0){
+    gameState = "won";
+  }
+  winCounter = 0;
+}
 
 // not in use
 function mousePressed(){
@@ -186,15 +294,19 @@ function toggleCell(x, y) {
 // tells pacman what direction to move in depending on what key is pressed
 function handleKeys(){
   if(keyIsDown(KEY_S) && frameCount % 10 === 0){
+    pacTravelState = "down";
     movePacMan(pacMan.x, pacMan.y + 1);
   }
   else if(keyIsDown(KEY_W) && frameCount % 10 === 0){
+    pacTravelState = "up";
     movePacMan(pacMan.x, pacMan.y - 1);
   }
   else if(keyIsDown(KEY_A) && frameCount % 10 === 0){
+    pacTravelState = "left";
     movePacMan(pacMan.x - 1, pacMan.y);
   }
   else if(keyIsDown(KEY_D) && frameCount % 10 === 0){
+    pacTravelState = "right";
     movePacMan(pacMan.x + 1, pacMan.y);
   }
 }
@@ -379,12 +491,19 @@ function keyPressed(){
   if (key === "z"){
     grid = theMap1.one;
     gameState = "go";
-    q = millis();
+    q = millis() + 100000;
     score = 0;
     for(let q = 0; q < 8; q ++){
       generatePowerPellet();
       displayPowerPellet();
     }
+  }
+}
+
+// animates pacMan
+function openClose(){
+  if(millis() > q){
+    q += 100000;
   }
 }
 
@@ -430,9 +549,9 @@ function strength(){
   else{
     pacState = "weak";
   }
-  if(frameCount%10 === 0){
-    console.log(pacState);
-  }
+  // if(frameCount%10 === 0){
+  //   console.log(pacState);
+  // }
 }
 
 // displays the grid
@@ -440,37 +559,71 @@ function displayGrid() {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       if (grid[y][x] === WALL) {
-        fill("blue");
+        image(wallImg, x * cellSize, y * cellSize, cellSize);
       }
       else if (grid[y][x] === POINTSPOT){
-        fill("black");
+        fill(0);
+        image(pointspot, x * cellSize, y * cellSize, cellSize);
       }
       else if (grid[y][x] === PLAYER){
-        fill("yellow");
+        // makes it so pac man opens and closes his mouth
+        // if(q > millis() + 50000){
+        //   image(pacImg0, x*cellSize, y*cellSize, cellSize);
+        // }
+        // makes sure pacman is facing the right direction
+        if(pacTravelState === "right"){
+          image(pacImg1, x * cellSize, y * cellSize, cellSize);
+        }
+        else if(pacTravelState === "down"){
+          image(pacImg2, x * cellSize, y * cellSize, cellSize);
+        }
+        else if(pacTravelState === "up"){
+          image(pacImg4, x * cellSize, y * cellSize, cellSize);
+        }
+        else if(pacTravelState === "left"){
+          image(pacImg3, x * cellSize, y * cellSize, cellSize);
+        }
       }
       else if (grid[y][x] === NOPOINT){
-        fill("white");
+        image(noPointImg, x * cellSize, y * cellSize, cellSize);
       }
       else if (grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2){
-        fill("red");
+        image(noPointImg, x * cellSize, y * cellSize, cellSize);
       }
       else if(grid[y][x] === GHOSTPOINT){
-        fill("blue");
+        image(wallImg, x * cellSize, y * cellSize, cellSize);
       }
       else if(grid[y][x] === POWERPILL){
-        fill("green");
+        image(powerPelletImage, x * cellSize, y * cellSize, cellSize);
       }
       else if(grid[y][x] === GHOST1){
-        // fill(170);
-        image(ghost1Image, x * cellSize, y * cellSize, cellSize);
+        if(pacState === "weak"){
+          image(ghost1Image, x * cellSize, y * cellSize, cellSize);
+        }
+        else{
+          image(scaredGhostImg,x*cellSize, y * cellSize, cellSize);
+        }
       }
       else if(grid[y][x] === GHOST2){
-        fill("orange");
+        if(pacState === "weak"){
+          image(ghost2Image, x * cellSize, y * cellSize, cellSize);
+        }
+        else{
+          image(scaredGhostImg, x * cellSize, y * cellSize, cellSize);
+        }
       }
       else if(grid[y][x] === GHOST3){
-        fill("lightBlue");
+        if(pacState === "weak"){
+          image(ghost3Image, x * cellSize, y * cellSize, cellSize);
+        }
+        else{
+          image(scaredGhostImg, x * cellSize, y * cellSize, cellSize);
+        }
       }
-      square(x * cellSize, y * cellSize, cellSize);
+      else if(grid[y][x] === GHOSTPOINT2){
+        image(noPointImg, x * cellSize, y * cellSize, cellSize);
+      }
+      // square(x * cellSize, y * cellSize, cellSize);
     }
   }
 }
