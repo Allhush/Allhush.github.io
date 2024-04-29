@@ -3,19 +3,11 @@
 // May 16th 2024
 // Pac-Man
 
-// To Do
-// make map // done
-// make player movement // done
-// Ai ghosts // done
-// regular pellets // done 
-// power pills // done
-// death stuff // done
-// death screen + resetting game stuff // done 
-// add more ghosts // done
-// music?
-// fix ghost moving stuff 
-// actual sprites // will do this eventually
-// ??? to be determined
+// extra for experts 
+// animated pacman
+// made all of the ghosts work with the same function
+// added 2 levels
+// created all of my own sprites
 
 const GRID_SIZE = 21;
 const POINTSPOT = 0;
@@ -72,7 +64,7 @@ let theGhost3 = {
 };
 let theGhost4 ={
   x:10,
-  y: 9,
+  y: 10,
 };
 // used to help ghosts move
 let ghostmove;
@@ -144,7 +136,7 @@ function setup() {
 
 function draw() {
   background(0);
-  // gameStart();
+  gameStart();
   displayGrid();
   if(gameState === "go"){
     displayGrid();
@@ -160,7 +152,7 @@ function draw() {
     checkForWin();
     showStateDecide();
   }
-  else if (gameState === "levelTwo"){
+  if (gameState === "levelTwo"){
     displayGrid();
     handleKeys();
     makePac();
@@ -216,6 +208,8 @@ function youWon(){
     theGhost2.y =8;
     theGhost3.x = 9;
     theGhost3.y =8;
+    theGhost4.x = 10;
+    theGhost4.y = 8;
     // resets powerpill function
     pillCounter = 0;
     pillState = "sober";
@@ -231,11 +225,48 @@ function youWon(){
     grid[10][9] = GHOSTPOINT2;
     grid[10][10] = GHOSTPOINT2;
     grid[10][11] = GHOSTPOINT2;
+    for(let q = 0; q < 8; q ++){
+      generatePowerPellet();
+      displayPowerPellet();
+    }
+    gameState = "levelTwo";
+  }
+  else if(gameState === "wonLevelTwo"){
+    background(0);
+    // gets rid of remaining powerpills
+    for(let q = 0; q < powerPills.length; q ++){
+      powerPills.pop();
+    }
+    // resets all coordinates
+    pacMan.x = 10;
+    pacMan.y = 16; 
+    theGhost1.x = 10;
+    theGhost1.y =8;
+    theGhost2.x = 11;
+    theGhost2.y =8;
+    theGhost3.x = 9;
+    theGhost3.y =8;
+    // resets powerpill function
+    pillCounter = 0;
+    pillState = "sober";
+    // resets map
+    for(let y = 0; y < grid.length; y ++){
+      for(let x = 0; x < grid[0].length; x ++){
+        if(grid[y][x] === NOPOINT  || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3 || grid[y][x] === GHOST4 || grid[y][x] === PLAYER || grid[y][x] === POWERPILL){
+          grid[y][x] = POINTSPOT;
+        }
+        
+      }
+    }
+    grid[10][9] = GHOSTPOINT2;
+    grid[10][10] = GHOSTPOINT2;
+    grid[10][11] = GHOSTPOINT2;
     textAlign(CENTER, CENTER);
     textSize(20);
     fill("red");
     text("you won!", width/2, height/2);
     text("your score was " + score, width/2, 5*height/8);
+
   }
 }
 
@@ -310,6 +341,7 @@ function checkForWin(){
   // console.log(winCounter)
   if(winCounter === 0 && levelState === "1"){
     gameState = "wonLevelOne";
+    levelState = "2";
   }
   else if(winCounter === 0 && levelState === "2"){
     gameState = "wonLevelTwo";
@@ -361,17 +393,16 @@ function handleKeys(){
 
 // draws ghost and starts its movement
 function makeGhosts(ghosty, ghostNumber){
-  if(gameState === "go"){
-    grid[ghosty.y][ghosty.x] = ghostNumber;
-    ghostly(ghosty, ghostNumber);
-  }
+  grid[ghosty.y][ghosty.x] = ghostNumber;
+  ghostly(ghosty, ghostNumber);
+
 }
 
 
 // moves the ghost around
 function moveGhosts(x, y, aGhost, GHOSTCOLOUR){
   // makes sure ghost is in bounds
-  if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT || grid[y][x] === POWERPILL || grid[y][x] === PLAYER || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3)){
+  if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y > 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === GHOSTPOINT || grid[y][x] === POWERPILL || grid[y][x] === PLAYER || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3 || grid[y][x] === GHOST4)){
     // finds ghosts old position so that it can be replaced later
     let oldX = aGhost.x;
     let oldY = aGhost.y;
@@ -425,6 +456,12 @@ function moveGhosts(x, y, aGhost, GHOSTCOLOUR){
       grid[y][x] = GHOSTCOLOUR;
       grid[oldY][oldX] = NOPOINT;
     }
+    else if(grid[y][x] === GHOST4 && GHOSTCOLOUR !== GHOST4){
+      aGhost.x = x;
+      aGhost.y = y;
+      grid[y][x] = GHOSTCOLOUR;
+      grid[oldY][oldX] = NOPOINT;
+    }
     else if(grid[y][x] === PLAYER && pacState === "weak"){
       gameState = "dead";
       // aGhost.x = x;
@@ -456,7 +493,7 @@ function ghostly(ghost1, GHOSTCOLOURS){
 
 function movePacMan(x, y){
   // checks to see if player is in bounds
-  if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y >= 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === POWERPILL || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3)){
+  if(x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y >= 0 && (grid[y][x] === POINTSPOT || grid[y][x] === NOPOINT || grid[y][x] === TELEPORT1 || grid[y][x] === TELEPORT2 || grid[y][x] === POWERPILL || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3 || grid[y][x] === GHOST4)){
     // used to replace previous square
     let oldX = pacMan.x;
     let oldY = pacMan.y;
@@ -530,6 +567,12 @@ function movePacMan(x, y){
       grid[y][x] = PLAYER;
       grid[oldY][oldX] = NOPOINT;
     }
+    else if(grid[y][x] === GHOST4){
+      pacMan.x = x;
+      pacMan.y = y;
+      grid[y][x] = PLAYER;
+      grid[oldY][oldX] = NOPOINT;
+    }
   }
   // q = millis() + 240;
 }
@@ -541,10 +584,24 @@ function keyPressed(){
     gameState = "go";
     q = millis() + 100000;
     score = 0;
+    for(let y = 0; y < grid.length; y ++){
+      for(let x = 0; x < grid[0].length; x ++){
+        if(grid[y][x] === NOPOINT  || grid[y][x] === GHOST1 || grid[y][x] === GHOST2 || grid[y][x] === GHOST3 || grid[y][x] === GHOST4 || grid[y][x] === PLAYER || grid[y][x] === POWERPILL){
+          grid[y][x] = POINTSPOT;
+        }
+      }
+    }
+    pacMan.x = 10; 
+    pacMan.y = 16;
+    theGhost4.x = 10;
+    theGhost4.y = 10;
     for(let q = 0; q < 8; q ++){
       generatePowerPellet();
       displayPowerPellet();
     }
+    grid[10][10] = NOPOINT;
+    grid[10][11] = NOPOINT;
+    grid[10][9]= NOPOINT;
   }
 }
 
@@ -581,6 +638,16 @@ function pacGhostCollison(){
     if(pacState === "strong"){
       theGhost3.x = 10;
       theGhost3.y = 8;
+      score += 100;
+    }
+    else{
+      gameState = "dead";
+    }
+  }
+  if(theGhost4.y === pacMan.y && theGhost4.x === pacMan.x){
+    if(pacState === "strong"){
+      theGhost4.x = 10;
+      theGhost4.y = 8;
       score += 100;
     }
     else{
