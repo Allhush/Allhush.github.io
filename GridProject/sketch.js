@@ -90,6 +90,7 @@ let noPointImg;
 let scaredGhostImg;
 let pacImg0;
 let pacTravelState = "right";
+let showState = "no";
 // sees how close player is to winning
 let winCounter = 0;
 
@@ -142,9 +143,21 @@ function draw() {
     openClose();
     scoreKeep();
     checkForWin();
+    showStateDecide();
   }
   youWon();
   deathScreen();
+}
+
+
+// opens and closes pacMans mouth
+function showStateDecide(){
+  if(frameCount%25 === 0 && frameCount%50 !== 0){
+    showState = "yes";
+  }
+  else if(frameCount%50 === 0){
+    showState = "no";
+  }
 }
 
 function gameStart(){
@@ -566,22 +579,25 @@ function displayGrid() {
         image(pointspot, x * cellSize, y * cellSize, cellSize);
       }
       else if (grid[y][x] === PLAYER){
-        // makes it so pac man opens and closes his mouth
-        // if(q > millis() + 50000){
-        //   image(pacImg0, x*cellSize, y*cellSize, cellSize);
-        // }
-        // makes sure pacman is facing the right direction
-        if(pacTravelState === "right"){
-          image(pacImg1, x * cellSize, y * cellSize, cellSize);
+        // closes pacmans mouth
+        if(showState === "yes"){
+          image(pacImg0, x*cellSize, y*cellSize, cellSize);
         }
-        else if(pacTravelState === "down"){
-          image(pacImg2, x * cellSize, y * cellSize, cellSize);
-        }
-        else if(pacTravelState === "up"){
-          image(pacImg4, x * cellSize, y * cellSize, cellSize);
-        }
-        else if(pacTravelState === "left"){
-          image(pacImg3, x * cellSize, y * cellSize, cellSize);
+        // opens pacmans mouth
+        else if(showState === "no"){
+          // makes sure pacman is facing the right direction
+          if(pacTravelState === "right"){
+            image(pacImg1, x * cellSize, y * cellSize, cellSize);
+          }
+          else if(pacTravelState === "down"){
+            image(pacImg2, x * cellSize, y * cellSize, cellSize);
+          }
+          else if(pacTravelState === "up"){
+            image(pacImg4, x * cellSize, y * cellSize, cellSize);
+          }
+          else if(pacTravelState === "left"){
+            image(pacImg3, x * cellSize, y * cellSize, cellSize);
+          }
         }
       }
       else if (grid[y][x] === NOPOINT){
