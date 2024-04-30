@@ -10,6 +10,7 @@
 - [bubble movement](bubble)
 - [2D grid](2DGrid)
 - [2D grid project](GridProject)
+- [Walker OOP](walker)
 
 ## Projects
 - [Interactive Scene](scene)
