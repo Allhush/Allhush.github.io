@@ -11,6 +11,7 @@
 - [2D grid](2DGrid)
 - [2D grid project](GridProject)
 - [Walker OOP](walker)
+- [FireWroks](objectOrientedParticles)
 
 ## Projects
 - [Interactive Scene](scene)
