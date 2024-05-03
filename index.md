@@ -9,10 +9,10 @@
 - [Terrain generation Perlin noise](terrian)
 - [bubble movement](bubble)
 - [2D grid](2DGrid)
-- [2D grid project](GridProject)
 - [Walker OOP](walker)
 - [FireWroks](objectOrientedParticles)
 
 ## Projects
 - [Interactive Scene](scene)
 - [Arrays and object Notation](ArrayNotation)
+- [2D grid project](GridProject)
