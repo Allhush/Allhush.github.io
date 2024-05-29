@@ -13,7 +13,8 @@
 - [FireWroks](objectOrientedParticles)
 - [Connected Nodes](nodes)
 - [clickable button demo](clickable)
-- [recursive circles](recursive circle) 
+- [recursive circles](recursiveCircle) 
+- [seirpinsky triangles](weirdTriangles)
 
 ## Projects
 - [Interactive Scene](scene)
